@@ -1179,9 +1179,7 @@ cudnn-8.1.0.77       | 610.8 MB  | #############################################
 cudatoolkit-11.2.2   | 879.9 MB  | ############################################################################ | 100%
 Preparing transaction: done
 Verifying transaction: done
-Executing transaction: / "By downloading and using the CUDA Toolkit conda packages, you accept the terms and conditions of the CUDA End User License Agreement (EULA): https://docs.nvidia.com/cuda/eula/index.html"
-
-| "By downloading and using the cuDNN conda packages, you accept the terms and conditions of the NVIDIA cuDNN EULA - https://docs.nvidia.com/deeplearning/cudnn/sla/index.html"
+Executing transaction: done
 
 done
 ```
