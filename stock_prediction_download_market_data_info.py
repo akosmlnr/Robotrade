@@ -1,75 +1,42 @@
 # ==============================================================================
 
 import json
-import yfinance as yf
+from polygon_data_fetcher import PolygonTicker
 
-sec = yf.Ticker("^FTSE")
+api_key = "zjBfWbPFc5gE5AgPZpmghkcVkuak0azA"
+sec = PolygonTicker("FTSE", api_key)  # Note: FTSE index might not be available, using FTSE as example
 
 data = sec.history()
 #data.head()
 
-my_max = data['Close'].idxmax()
-my_min = data['Close'].idxmin()
+if not data.empty:
+    my_max = data['Close'].idxmax()
+    my_min = data['Close'].idxmin()
+    print(f"Max Close: {data['Close'].max()} at {my_max}")
+    print(f"Min Close: {data['Close'].min()} at {my_min}")
 
 print('Info')
 print(json.dumps(sec.info, indent=4, sort_keys=True))
 print()
-print('ISIN')
-print(sec.isin)
+
+# Note: Polygon.io provides different data structure than Yahoo Finance
+# Some of the detailed financial data might not be available through the basic API
+print('Note: Polygon.io provides different data structure than Yahoo Finance.')
+print('Some detailed financial data (dividends, splits, earnings, etc.) may require')
+print('additional API calls or premium subscription.')
 print()
-print('Major Holders')
-print(sec.major_holders)
+
+# Available data from Polygon.io
+print('Available data from Polygon.io:')
+print('- Basic ticker information')
+print('- Historical price data (OHLCV)')
+print('- Current price data')
+print('- Company details (name, market, exchange, etc.)')
 print()
-print('Institutional Holders')
-print(sec.institutional_holders)
-print()
-print('Dividents')
-print(sec.dividends)
-print()
-print('Splits')
-print(sec.splits)
-print()
-print('Actions')
-print(sec.actions)
-print()
-print('Calendar')
-print(sec.calendar)
-print()
-print('Recommendations')
-print(sec.recommendations)
-print()
-print('Earnings')
-print(sec.earnings)
-print()
-print('Quarterly Earnings')
-print(sec.quarterly_earnings)
-print()
-print('Financials')
-print(sec.financials)
-print()
-print('Quarterly Financials')
-print(sec.quarterly_financials)
-print()
-print('Balance Sheet')
-print(sec.balance_sheet)
-print()
-print('Quarterly Balance Sheet')
-print(sec.quarterly_balance_sheet)
-print()
-print('BalanceSheet')
-print(sec.balancesheet)
-print()
-print('Quarterly BalanceSheet')
-print(sec.quarterly_balancesheet)
-print()
-print('Cash Flow')
-print(sec.cashflow)
-print()
-print('Quarterly Cash Flow')
-print(sec.quarterly_cashflow)
-print()
-print('Sustainability')
-print(sec.sustainability)
-print()
-print('Options')
-print(sec.options)
+
+# Example of getting more detailed info if available
+if sec.info:
+    print('Company Details:')
+    for key, value in sec.info.items():
+        if value:  # Only print non-empty values
+            print(f'{key}: {value}')

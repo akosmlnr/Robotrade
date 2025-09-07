@@ -7,13 +7,13 @@ import random
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from datetime import datetime
-import yfinance as yf
+from polygon_data_fetcher import PolygonTicker
 
 
 class StockData:
-    def __init__(self, stock):
+    def __init__(self, stock, api_key="zjBfWbPFc5gE5AgPZpmghkcVkuak0azA"):
         self._stock = stock
-        self._sec = yf.Ticker(self._stock.get_ticker())
+        self._sec = PolygonTicker(self._stock.get_ticker(), api_key)
         self._min_max = MinMaxScaler(feature_range=(0, 1))
 
     def __data_verification(self, train):
@@ -23,18 +23,20 @@ class StockData:
         print('Std dev:', train.std(axis=0))
 
     def get_stock_short_name(self):
-        return self._sec.info['shortName']
+        return self._sec.info.get('name', self._stock.get_ticker())
 
     def get_min_max(self):
         return self._min_max
 
     def get_stock_currency(self):
-        return self._sec.info['currency']
+        return self._sec.info.get('currency_name', 'USD')
 
     def download_transform_to_numpy(self, time_steps, project_folder):
         end_date = datetime.today()
         print('End Date: ' + end_date.strftime("%Y-%m-%d"))
-        data = yf.download([self._stock.get_ticker()], start=self._stock.get_start_date(), end=end_date)[['Close']]
+        # Use Polygon.io to get data
+        data = self._sec.history(start=self._stock.get_start_date().strftime('%Y-%m-%d'), 
+                                end=end_date.strftime('%Y-%m-%d'))[['Close']]
         data = data.reset_index()
         data.to_csv(os.path.join(project_folder, 'downloaded_data_'+self._stock.get_ticker()+'.csv'))
         #print(data)

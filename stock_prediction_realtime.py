@@ -5,7 +5,7 @@ import time
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-import yfinance as yf
+from polygon_data_fetcher import PolygonDataFetcher
 from datetime import datetime, timedelta
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
@@ -14,7 +14,7 @@ from threading import Thread
 import json
 
 class RealTimeStockPredictor:
-    def __init__(self, ticker, model_path, time_steps=3, update_interval=300):
+    def __init__(self, ticker, model_path, time_steps=3, update_interval=300, api_key="zjBfWbPFc5gE5AgPZpmghkcVkuak0azA"):
         """
         Initialize the real-time stock predictor
         
@@ -23,6 +23,7 @@ class RealTimeStockPredictor:
             model_path: Path to the trained model weights (.h5 file)
             time_steps: Number of time steps for LSTM (default: 3)
             update_interval: Update interval in seconds (default: 300 = 5 minutes)
+            api_key: Polygon.io API key
         """
         self.ticker = ticker
         self.model_path = model_path
@@ -32,6 +33,7 @@ class RealTimeStockPredictor:
         self.min_max_scaler = None
         self.is_running = False
         self.predictions_history = []
+        self.data_fetcher = PolygonDataFetcher(api_key)
         
         # Load the trained model
         self.load_model()
@@ -49,7 +51,7 @@ class RealTimeStockPredictor:
     
     def get_latest_data(self, days_back=30):
         """
-        Get the latest stock data from Yahoo Finance
+        Get the latest stock data from Polygon.io
         
         Args:
             days_back: Number of days to fetch (default: 30)
@@ -63,7 +65,7 @@ class RealTimeStockPredictor:
             
             print(f"📊 Fetching data for {self.ticker} from {start_date.date()} to {end_date.date()}")
             
-            data = yf.download(self.ticker, start=start_date, end=end_date, progress=False)
+            data = self.data_fetcher.get_stock_data(self.ticker, start_date, end_date)
             
             if data.empty:
                 raise ValueError(f"No data found for ticker {self.ticker}")
@@ -135,9 +137,7 @@ class RealTimeStockPredictor:
     def get_current_price(self):
         """Get the current stock price"""
         try:
-            ticker = yf.Ticker(self.ticker)
-            info = ticker.info
-            current_price = info.get('regularMarketPrice', info.get('currentPrice'))
+            current_price = self.data_fetcher.get_current_price(self.ticker)
             return current_price
         except Exception as e:
             print(f"❌ Error getting current price: {e}")

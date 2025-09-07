@@ -1,23 +1,26 @@
 # ==============================================================================
 
 import pandas as pd
-import yfinance as yf
+from polygon_data_fetcher import download
 import datetime
 
 # show data for different tickers
 start = pd.to_datetime('2004-08-01')
-stock = ['ETH-USD']
-data = yf.download(stock, start=start, end=datetime.date.today())
+api_key = "zjBfWbPFc5gE5AgPZpmghkcVkuak0azA"
+
+# Note: ETH-USD is a crypto ticker, using ETH instead for Polygon.io
+stock = ['ETH']
+data = download(stock, start=start, end=datetime.date.today(), api_key=api_key)
 print(data)
 
-stock = ['GOOG']
-data = yf.download(stock, start=start, end=datetime.date.today())
+stock = ['GOOGL']  # Google's ticker on Polygon.io
+data = download(stock, start=start, end=datetime.date.today(), api_key=api_key)
 print(data)
 
-stock = ['FB']
-data = yf.download(stock, start=start, end=datetime.date.today())
+stock = ['META']  # Facebook is now Meta
+data = download(stock, start=start, end=datetime.date.today(), api_key=api_key)
 print(data)
 
 stock = ['TSLA']
-data = yf.download(stock, start=start, end=datetime.date.today())
+data = download(stock, start=start, end=datetime.date.today(), api_key=api_key)
 print(data)
