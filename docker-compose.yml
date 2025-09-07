@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  stock-prediction:
+    build: .
+    container_name: stock-prediction-app
+    volumes:
+      # Mount current directory for development
+      - .:/app
+      # Mount outputs directory to persist results
+      - ./outputs:/app/outputs
+      # Mount models directory to persist trained models
+      - ./models:/app/models
+      # Mount data directory for data persistence
+      - ./data:/app/data
+    environment:
+      - PYTHONPATH=/app
+      - TZ=UTC
+    # ports:
+      # Jupyter notebook port
+      # - "8888:8888"
+    command: >
+      python stock_prediction_deep_learning.py
+      -ticker GOOG
+      -start_date 2017-11-01
+      -validation_date 2022-09-01
+      -epochs 100
+      -batch_size 32
+      -time_steps 3
+    stdin_open: true
+    tty: true
+
+  # Service for real-time predictions
+  realtime-prediction:
+    build: .
+    container_name: stock-realtime-prediction
+    volumes:
+      - .:/app
+      - ./outputs:/app/outputs
+      - ./models:/app/models
+      - ./data:/app/data
+    environment:
+      - PYTHONPATH=/app
+      - TZ=UTC
+    command: >
+      python stock_prediction_realtime.py
+      --ticker=GOOG
+      --model=./models/model_weights.h5
+      --time_steps=3
+      --interval=300
+    depends_on:
+      - stock-prediction
+    profiles:
+      - realtime
+
+  # Jupyter notebook service
+  jupyter:
+    build: .
+    container_name: stock-prediction-jupyter
+    volumes:
+      - .:/app
+      - ./outputs:/app/outputs
+      - ./models:/app/models
+      - ./data:/app/data
+    environment:
+      - PYTHONPATH=/app
+      - TZ=UTC
+    ports:
+      - "8888:8888"
+    command: >
+      jupyter lab
+      --ip=0.0.0.0
+      --port=8888
+      --no-browser
+      --allow-root
+      --ServerApp.token=''
+      --ServerApp.password=''
+    profiles:
+      - jupyter
+
+volumes:
+  outputs:
+  models:
+  data:
