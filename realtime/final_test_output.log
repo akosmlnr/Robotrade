@@ -1,0 +1,1185 @@
+[0;32mRunning tests...[0m 
+docker run --rm -v "/Users/akosmlnr/Documents/Software Development/Robotrade/realtime":/app realtime-lstm python tests/test_comprehensive.py
+APIServer import failed (expected): attempted relative import beyond top-level package
+RealTimeSystem import failed (expected): attempted relative import beyond top-level package
+EnhancedRealTimeSystem import failed (expected): attempted relative import beyond top-level package
+Successfully imported available modules
+Starting Comprehensive Test Suite for Real-time LSTM Prediction System
+================================================================================
+test_config_get_set (__main__.TestConfig)
+Test configuration get/set operations ... ok
+test_config_save_load (__main__.TestConfig)
+Test configuration save and load ... ok
+test_config_validation (__main__.TestConfig)
+Test configuration validation ... ok
+test_default_config (__main__.TestConfig)
+Test default configuration loading ... ok
+test_symbol_management (__main__.TestConfig)
+Test symbol add/remove operations ... ok
+test_database_stats (__main__.TestDataStorage)
+Test database statistics ... ok
+test_market_data_operations (__main__.TestDataStorage)
+Test market data storage and retrieval ... No historical data found for TEST between 2025-09-13 08:56:44.234144 and 2025-09-13 09:56:44.234148
+ok
+test_storage_initialization (__main__.TestDataStorage)
+Test data storage initialization ... ok
+test_fetch_latest_data (__main__.TestPolygonDataFetcher)
+Test fetching latest data ... No 15-minute data found for AAPL
+ok
+test_list_available_models (__main__.TestModelManager)
+Test listing available models ... ok
+test_model_manager_initialization (__main__.TestModelManager)
+Test model manager initialization ... ok
+test_prediction_engine_initialization (__main__.TestPredictionEngine)
+Test prediction engine initialization ... ok
+test_get_logger (__main__.TestLoggingSystem)
+Test logger retrieval ... Error setting up loggers: 'LogHandler' object has no attribute 'setLevel'
+ok
+test_log_performance (__main__.TestLoggingSystem)
+Test performance logging ... Error setting up loggers: 'LogHandler' object has no attribute 'setLevel'
+ok
+test_log_structured (__main__.TestLoggingSystem)
+Test structured logging ... Error setting up loggers: 'LogHandler' object has no attribute 'setLevel'
+ok
+test_logging_system_initialization (__main__.TestLoggingSystem)
+Test logging system initialization ... Error setting up loggers: 'LogHandler' object has no attribute 'setLevel'
+ok
+test_error_tracker_initialization (__main__.TestErrorTracker)
+Test error tracker initialization ... ok
+test_get_error_statistics (__main__.TestErrorTracker)
+Test error statistics ... ok
+test_track_error (__main__.TestErrorTracker)
+Test error tracking ... Error tracked: 517094bc-cb7d-4779-a0ad-a2f26efe2329 - Exception: Test error message
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+ok
+test_get_performance_summary (__main__.TestPerformanceProfiler)
+Test performance summary ... ok
+test_profile_function (__main__.TestPerformanceProfiler)
+Test function profiling ... Error storing profile: 'DataStorage' object has no attribute 'store_performance_profile'
+ok
+test_profiler_initialization (__main__.TestPerformanceProfiler)
+Test performance profiler initialization ... ok
+test_create_webhook (__main__.TestWebhookSystem)
+Test webhook creation ... ok
+test_trigger_webhook (__main__.TestWebhookSystem)
+Test webhook triggering ... Webhook not found: ef23527c-ae1b-4ac1-a608-892b15539abe
+ok
+test_webhook_system_initialization (__main__.TestWebhookSystem)
+Test webhook system initialization ... ok
+test_api_server_initialization (__main__.TestAPIServer)
+Test API server initialization ... skipped 'Module not available'
+test_create_export (__main__.TestDataExporter)
+Test export creation ... Error loading export metadata: 'DataExporter' object has no attribute 'export_stats'
+Error saving export metadata: 'str' object has no attribute 'value'
+ok
+test_exporter_initialization (__main__.TestDataExporter)
+Test data exporter initialization ... Error loading export metadata: 'DataExporter' object has no attribute 'export_stats'
+ok
+test_validation_workflow_initialization (__main__.TestValidationWorkflow)
+Test validation workflow initialization ... ok
+test_accuracy_tracker_initialization (__main__.TestAccuracyTracker)
+Test accuracy tracker initialization ... ok
+test_track_prediction (__main__.TestAccuracyTracker)
+Test prediction tracking ... Error storing accuracy record: no such table: prediction_accuracy
+ok
+test_performance_monitor_initialization (__main__.TestPerformanceMonitor)
+Test performance monitor initialization ... Error recording metric model_accuracy: 'NoneType' object is not a mapping
+Error recording metric prediction_latency_ms: 'NoneType' object is not a mapping
+Error recording metric predictions_per_hour: 'NoneType' object is not a mapping
+ok
+test_record_metric (__main__.TestPerformanceMonitor)
+Test metric recording ... Error recording metric model_accuracy: 'NoneType' object is not a mapping
+Error recording metric predictions_per_hour: 'NoneType' object is not a mapping
+Error recording metric prediction_latency_ms: 'NoneType' object is not a mapping
+ok
+test_alerting_system_initialization (__main__.TestAlertingSystem)
+Test alerting system initialization ... ok
+test_create_alert (__main__.TestAlertingSystem)
+Test alert creation ... Alert rule test_rule_001 not found
+ok
+test_backup_recovery_initialization (__main__.TestBackupRecovery)
+Test backup recovery initialization ... Error loading backup metadata: Expecting value: line 22 column 20 (char 638)
+ok
+test_create_backup (__main__.TestBackupRecovery)
+Test backup creation ... Error loading backup metadata: Expecting value: line 22 column 20 (char 638)
+ok
+test_apply_retention_policy (__main__.TestDataRetention)
+Test retention policy application ... Error performing backup backup_20250913_095656: [Errno 2] No such file or directory: 'backups/backup_20250913_095656.db.gz'
+Error saving backup metadata: Object of type datetime is not JSON serializable
+Error in size-based retention for system_logs: No table mapping for category system_logs
+ok
+test_data_retention_initialization (__main__.TestDataRetention)
+Test data retention initialization ... ok
+test_realtime_system_initialization (__main__.TestRealTimeSystem)
+Test real-time system initialization ... skipped 'Module not available'
+test_system_status (__main__.TestRealTimeSystem)
+Test system status ... skipped 'Module not available'
+test_create_webhook (__main__.TestEnhancedRealTimeSystem)
+Test webhook creation through enhanced system ... skipped 'Module not available'
+test_enhanced_system_initialization (__main__.TestEnhancedRealTimeSystem)
+Test enhanced system initialization ... skipped 'Module not available'
+test_system_metrics (__main__.TestEnhancedRealTimeSystem)
+Test system metrics ... skipped 'Module not available'
+test_system_status (__main__.TestEnhancedRealTimeSystem)
+Test enhanced system status ... skipped 'Module not available'
+test_error_handling (__main__.TestIntegration)
+Test error handling across the system ... skipped 'Module not available'
+test_full_system_workflow (__main__.TestIntegration)
+Test complete system workflow ... skipped 'Module not available'
+test_logging_integration (__main__.TestIntegration)
+Test logging integration ... skipped 'Module not available'
+test_webhook_integration (__main__.TestIntegration)
+Test webhook integration ... skipped 'Module not available'
+test_error_tracking_performance (__main__.TestPerformance)
+Test error tracking performance ... Error tracked: 3e24d53c-993d-44b6-84be-4bfb938151b3 - Exception: Performance test error 0
+Error tracked: 98eac573-81f8-4b38-b647-904f0e9c418f - Exception: Performance test error 1
+Error tracked: 2b0694b9-99fb-4588-afee-50e758873193 - Exception: Performance test error 2
+Error tracked: da572d7c-7e74-481e-90d8-dec4b176624b - Exception: Performance test error 3
+Error tracked: 8344512f-4277-4a77-96b4-d7512156e59f - Exception: Performance test error 4
+Error tracked: c3c3b5ec-0034-4af2-89a4-6e9b32952ba2 - Exception: Performance test error 5
+Error tracked: 76e6ce97-def9-4ba5-94ec-07fbe1659791 - Exception: Performance test error 6
+Error tracked: d5e92e19-dc1d-4ffd-9806-1059e4e472c5 - Exception: Performance test error 7
+Error tracked: 0a201b2b-9d5d-4456-baff-35e940ad45e3 - Exception: Performance test error 8
+Error tracked: 6ec45e34-7804-435f-8831-3f699368e60d - Exception: Performance test error 9
+Error tracked: a5bc412d-ebb3-4ccf-939d-b2df990974f0 - Exception: Performance test error 10
+Error tracked: 5d9f3ac4-0594-4d39-87c1-34ffa027e7b1 - Exception: Performance test error 11
+Error tracked: 2a14468e-cc38-4717-b975-bbcdd8c21ba1 - Exception: Performance test error 12
+Error tracked: 813309be-5ca5-438e-ba5a-9b22ba00ab59 - Exception: Performance test error 13
+Error tracked: 649f3215-e04b-4e6e-8a5d-70bbbe505c4a - Exception: Performance test error 14
+Error tracked: a308ea00-30ef-497b-9af3-eaad1f7f0e84 - Exception: Performance test error 15
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+Error tracked: 4024ae2f-7fee-4553-8186-9a12c34fdcf7 - Exception: Performance test error 16
+Error tracked: 7e58b693-6d7a-4434-a4d2-fd2c2648f2f0 - Exception: Performance test error 17
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+Error tracked: 5cb1c033-8a00-46cf-9a00-a8b82f125987 - Exception: Performance test error 18
+Error tracked: accfdf96-021b-4b0d-996a-7f536ca794e9 - Exception: Performance test error 19
+Error tracked: 0b1e72b8-4c67-40b8-9d08-37cd586f799b - Exception: Performance test error 20
+Error tracked: 61c50fff-6da8-4d1e-be1c-a3c90218f866 - Exception: Performance test error 21
+Error tracked: 2526b85e-cd6e-4791-8e78-83ed6d3328b3 - Exception: Performance test error 22
+Error tracked: f0a57d22-2ba7-4743-af65-0d89a3eee0d3 - Exception: Performance test error 23
+Error tracked: 3f2ca1fc-98bb-4cdb-8bab-bcbf3b78bece - Exception: Performance test error 24
+Error tracked: c7a6608d-2c2d-47e7-9ed3-3a95aedf1a87 - Exception: Performance test error 25
+Error tracked: b45d46c3-9528-426a-9dd0-4bf3a5fe17a4 - Exception: Performance test error 26
+Error tracked: 835bd94f-35f8-4a2b-b675-7f19888133b4 - Exception: Performance test error 27
+Error tracked: f54e469a-2d06-4cf9-a821-a61506a9a919 - Exception: Performance test error 28
+Error tracked: 314961eb-5896-4e9a-bbe9-11fd70dcef21 - Exception: Performance test error 29
+Error tracked: 3550af29-529b-4ffb-8fe0-a5ce0cad4dd7 - Exception: Performance test error 30
+Error tracked: c652d87b-a5c6-44d0-9b85-e1bde569f4f3 - Exception: Performance test error 31
+Error tracked: 68e1976f-2844-4eb0-a72b-ea01b21c85d7 - Exception: Performance test error 32
+Error tracked: 89ef9bf1-db79-444e-a5cf-3d6c34753343 - Exception: Performance test error 33
+Error tracked: 001bd563-09b6-4335-b19d-bb57eafae240 - Exception: Performance test error 34
+Error tracked: dfef5a4e-ccfb-40b2-835f-47117f66efaa - Exception: Performance test error 35
+Error tracked: 5136d875-8c92-4339-b39e-efb6601b2694 - Exception: Performance test error 36
+Error tracked: 9cb78be4-7809-4ab8-b32c-e9080734e942 - Exception: Performance test error 37
+Error tracked: 5bad3449-e88a-4fc1-b408-c0464eadb508 - Exception: Performance test error 38
+Error tracked: 640acc1b-1fea-40c1-84ab-b39427ff82b5 - Exception: Performance test error 39
+Error tracked: 7eb68c81-a7c7-4ca5-8738-835b5e68daaf - Exception: Performance test error 40
+Error tracked: fd16f311-4cfb-4055-9f99-fcdedad1773b - Exception: Performance test error 41
+Error tracked: b34f35e6-5e26-4474-bfdf-e554cc0f72e7 - Exception: Performance test error 42
+Error tracked: 6deb027b-6f22-4bb1-a307-377f30025cbb - Exception: Performance test error 43
+Error tracked: 9bd9a8c5-3d93-40d8-a57b-9892525bf4aa - Exception: Performance test error 44
+Error tracked: bb919712-adcd-402c-a549-94e61389d411 - Exception: Performance test error 45
+Error tracked: 2f493112-b97f-46a4-8115-ca6330667be2 - Exception: Performance test error 46
+Error tracked: b7070c3d-2559-4975-b3d2-4c9a48e54379 - Exception: Performance test error 47
+Error tracked: fd6cc705-df28-45ae-9e34-f1bf5c71752e - Exception: Performance test error 48
+Error tracked: d74ff77c-f359-402a-8009-002ead984a78 - Exception: Performance test error 49
+Error tracked: 113a263f-106f-461e-b3dd-411f5af15358 - Exception: Performance test error 50
+Error tracked: c3af6333-3652-4a4c-8c1d-cc3badfb74c9 - Exception: Performance test error 51
+Error tracked: 8ab9ea4c-5658-421c-8b59-1f2377b1db75 - Exception: Performance test error 52
+Error tracked: b9515947-e6a2-4712-b319-bee9148190ae - Exception: Performance test error 53
+Error tracked: b9ee1800-e30b-45f7-b22f-9a5fcbd9f411 - Exception: Performance test error 54
+Error tracked: 39d2ca36-dbea-4880-b962-e0180b753d68 - Exception: Performance test error 55
+Error tracked: d3bff5f9-2c9a-4ae5-88de-a3111ffd32e1 - Exception: Performance test error 56
+Error tracked: 144da380-5bc9-4ed6-aedb-c74d14407a4b - Exception: Performance test error 57
+Error tracked: cd24f115-51d3-44b4-b7ad-af3b5b7f87d0 - Exception: Performance test error 58
+Error tracked: e3455463-94c4-43fc-aa08-be6405c7cf09 - Exception: Performance test error 59
+Error tracked: 8e2eb5af-b7e7-4b17-8eb4-d317210bc162 - Exception: Performance test error 60
+Error tracked: 006d13a7-d4e8-4700-a8a3-142782a051e7 - Exception: Performance test error 61
+Error tracked: ca6ee53a-cd49-41f1-b0db-8a43a7f8b524 - Exception: Performance test error 62
+Error tracked: c92c6f27-b8d8-42cb-a66d-d21cb6a4f27b - Exception: Performance test error 63
+Error tracked: 8220b8c6-06df-48da-b95d-e3e12ae78f50 - Exception: Performance test error 64
+Error tracked: a74dc770-c8e0-48b5-9543-831f5d52fda7 - Exception: Performance test error 65
+Error tracked: e6ee7067-80b5-4829-97a4-6af63728fe7c - Exception: Performance test error 66
+Error tracked: 61a2b1a1-0dc8-47bf-ac71-da77e2f0eb57 - Exception: Performance test error 67
+Error tracked: baab249c-dadf-42b3-bb60-95868ac00cb3 - Exception: Performance test error 68
+Error tracked: c792096b-7e91-472e-ad1d-182ff4a1a109 - Exception: Performance test error 69
+Error tracked: 0bf1f498-9476-4380-8883-ee163468ad3a - Exception: Performance test error 70
+Error tracked: 3c34b624-b372-4b18-8345-2d200a8bec39 - Exception: Performance test error 71
+Error tracked: 619322aa-99e9-479d-adee-8e92c89f1b14 - Exception: Performance test error 72
+Error tracked: 67e879d9-1638-416f-b33a-e31514c8090f - Exception: Performance test error 73
+Error tracked: 9c958f83-23d4-4e1b-a4d6-789924f81550 - Exception: Performance test error 74
+Error tracked: 4c8cbe44-9cb3-427f-bc3e-14aad1c2933e - Exception: Performance test error 75
+Error tracked: 6108632e-965c-4332-a348-d6387238e6ae - Exception: Performance test error 76
+Error tracked: 7fcb4e37-0726-434a-a6b3-b520a982e490 - Exception: Performance test error 77
+Error tracked: 724a38f1-1b73-4615-9105-a7d47496ac66 - Exception: Performance test error 78
+Error tracked: bfe090f6-f29d-4fdc-b217-5e615a8e7706 - Exception: Performance test error 79
+Error tracked: a5b52196-0720-4f67-9a06-b5fe09daa83f - Exception: Performance test error 80
+Error tracked: f9fb2c27-162a-4825-8092-7f7247d4ef3e - Exception: Performance test error 81
+Error tracked: 326883fe-7668-4736-b729-c8d63868086d - Exception: Performance test error 82
+Error tracked: 8d6c65f3-bcb8-435f-ba72-71e7fba5daca - Exception: Performance test error 83
+Error tracked: 91021ff6-ab12-411a-9728-827b3cb59c66 - Exception: Performance test error 84
+Error tracked: 1ef1116f-ac2d-44e2-9610-686c85c8fae1 - Exception: Performance test error 85
+Error tracked: 3276a6b8-d8e1-4b17-a858-5dae3d3f323b - Exception: Performance test error 86
+Error tracked: 55be7252-234e-486c-b0b6-23f712c0f827 - Exception: Performance test error 87
+Error tracked: 2b64adf0-f7c1-48e8-8fe7-8818246c2d9b - Exception: Performance test error 88
+Error tracked: 60f95937-88e1-4424-8692-90fc0d6ecdf0 - Exception: Performance test error 89
+Error tracked: 57e7176a-4cbe-44b9-83e2-06fb0b393658 - Exception: Performance test error 90
+Error tracked: 8953a651-84ad-48a7-adbe-707db55ad439 - Exception: Performance test error 91
+Error tracked: 58b90497-afc2-4555-9e0e-cad88e65f7a8 - Exception: Performance test error 92
+Error tracked: 516697a0-15b8-40db-9b3a-2419695239bf - Exception: Performance test error 93
+Error tracked: 557d368c-3980-4270-aa19-2899190213e7 - Exception: Performance test error 94
+Error tracked: b07954cc-97f6-4580-9f38-37c325cad800 - Exception: Performance test error 95
+Error tracked: 851c35d6-20f2-49cd-b092-531b248f2fcb - Exception: Performance test error 96
+Error tracked: ab2ee3e2-0e8e-4b47-96f7-16e741a9bdc4 - Exception: Performance test error 97
+Error tracked: d50c7160-f865-4d49-a90b-26b69e74fc5e - Exception: Performance test error 98
+Error tracked: 5966bb5f-5b0e-4b82-8b92-e6ccb2402a27 - Exception: Performance test error 99
+Error tracked: c70e6cd6-9a40-4545-87a9-81cf8d92cac3 - Exception: Performance test error 100
+Error tracked: fcced0c5-9e9e-4f04-b130-6f4e30f8d834 - Exception: Performance test error 101
+Error tracked: 39d81cd7-0b37-40d8-9404-79a18d9b3240 - Exception: Performance test error 102
+Error tracked: d1b87145-86f4-4f85-a8cb-21281abe870f - Exception: Performance test error 103
+Error tracked: 2974d1a7-9972-467c-8038-0b8d9d49488d - Exception: Performance test error 104
+Error tracked: 837a9362-0349-4f2b-9ca6-5282dd28f2c0 - Exception: Performance test error 105
+Error tracked: 43aaac9f-1554-4e71-b485-7a64e5a9e771 - Exception: Performance test error 106
+Error tracked: 23e10c4f-96a9-4012-a039-ed82249ede5c - Exception: Performance test error 107
+Error tracked: e707172f-e159-4ab5-8565-280870536d3a - Exception: Performance test error 108
+Error tracked: c1be3c19-15a8-4430-a1f7-d7035fae5c27 - Exception: Performance test error 109
+Error tracked: 397d6d02-9bad-47f0-87a3-ec665629820e - Exception: Performance test error 110
+Error tracked: abbab962-a6dd-44ae-8586-1a93f268b5c5 - Exception: Performance test error 111
+Error tracked: 9f364167-b712-4419-8566-e9bba1d708b5 - Exception: Performance test error 112
+Error tracked: b56f9e41-e4a5-410d-b231-0010bc28bb89 - Exception: Performance test error 113
+Error tracked: aeea00ef-2751-43d5-831a-fa34b1692a69 - Exception: Performance test error 114
+Error tracked: e9169f7f-81a0-47ee-983e-7f6964ec4bfd - Exception: Performance test error 115
+Error tracked: 2e81addc-abfa-46a6-9c4d-7289d613434d - Exception: Performance test error 116
+Error tracked: 86a06bd3-87cf-4b83-8de7-8f5cb1cab385 - Exception: Performance test error 117
+Error tracked: 0d879832-2909-473c-b725-1753a6eea483 - Exception: Performance test error 118
+Error tracked: 6f59b19d-e271-4529-adb9-858ec80fddc8 - Exception: Performance test error 119
+Error tracked: e546e1cc-a9f8-436b-a996-279560502044 - Exception: Performance test error 120
+Error tracked: c20b4e47-2106-4c79-a9c8-3509a85e5e84 - Exception: Performance test error 121
+Error tracked: cabbd4b6-50d4-4c6f-a684-8ff25d7ea4d1 - Exception: Performance test error 122
+Error tracked: 8672e873-1918-45c5-a271-83b1dec041b5 - Exception: Performance test error 123
+Error tracked: a9517e6e-1e89-48e4-b407-83963db6be2d - Exception: Performance test error 124
+Error tracked: bc4445d3-e64c-4631-8f3b-68891e23adac - Exception: Performance test error 125
+Error tracked: 9e290eb5-0cfc-4118-932d-47aadb16c4cc - Exception: Performance test error 126
+Error tracked: f99f1b04-5bd1-462b-8f27-732b3cb24f29 - Exception: Performance test error 127
+Error tracked: b2d82273-15fc-447b-ba76-1252a797ab68 - Exception: Performance test error 128
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+Error tracked: 9d8a6297-7e50-4328-9d7c-7eae3a9835fb - Exception: Performance test error 129
+Error tracked: a7a8bdbb-8036-4358-b945-75f4698ca19a - Exception: Performance test error 130
+Error tracked: 7167e41a-12db-4117-bb0e-14fbbe239234 - Exception: Performance test error 131
+Error tracked: ba402828-99a5-41fa-89d5-92d3656a2e9a - Exception: Performance test error 132
+Error tracked: cdb35a39-0888-4c56-8b9b-c9bb8f7a45b0 - Exception: Performance test error 133
+Error tracked: 250c32a6-a1b0-4c6e-8dde-4dd26af19dec - Exception: Performance test error 134
+Error tracked: d85aae68-7325-4312-9965-f542b704a389 - Exception: Performance test error 135
+Error tracked: f39a4b1b-f2fd-4f0f-b067-b95b1288a164 - Exception: Performance test error 136
+Error tracked: fab8f3fe-f2e5-4b6f-9e72-bd45564a6393 - Exception: Performance test error 137
+Error tracked: f8d3873b-9257-4d2c-9d5f-e1b42792a71a - Exception: Performance test error 138
+Error tracked: 3b70641c-d3b5-45f7-92a0-fd39fc30d4d2 - Exception: Performance test error 139
+Error tracked: 3b68d684-d1c9-4207-a3a6-fcb49d2f8279 - Exception: Performance test error 140
+Error tracked: a7a4ed15-7627-4b46-8a8d-9ffcd7b3a1ef - Exception: Performance test error 141
+Error tracked: 23fffade-6796-4a1d-af40-1b485d49af7a - Exception: Performance test error 142
+Error tracked: c9e7c9e4-f167-47eb-bc3f-6908407645be - Exception: Performance test error 143
+Error tracked: f4391da4-8637-480b-bf06-7e95747eee2e - Exception: Performance test error 144
+Error tracked: 74770b36-24ae-4d9b-9d56-7f957071ec81 - Exception: Performance test error 145
+Error tracked: 2307f6de-0fda-468f-9a4e-9ab45c4c84f3 - Exception: Performance test error 146
+Error tracked: 3c7b3eb8-40dd-4120-b6d7-dee52a2b1b6b - Exception: Performance test error 147
+Error tracked: 47018ba1-68c6-4b79-acac-52598ebe5c79 - Exception: Performance test error 148
+Error tracked: 79958614-097a-4f33-bdf4-47178ec39b56 - Exception: Performance test error 149
+Error tracked: 2a6a38f0-bfa6-4d6f-8007-77fc159b9e1d - Exception: Performance test error 150
+Error tracked: f945ccb3-7f1c-40c8-91c4-f4a41dea22c3 - Exception: Performance test error 151
+Error tracked: 96f1cb76-cc72-4329-b6d1-d71300bfa9e1 - Exception: Performance test error 152
+Error tracked: 39a6c99c-f979-4144-a587-0bb3be58e946 - Exception: Performance test error 153
+Error tracked: cf199b6c-9e03-4b38-a315-f0147a0da854 - Exception: Performance test error 154
+Error tracked: 557d095c-833b-48b5-9319-a6263a5f6fc0 - Exception: Performance test error 155
+Error tracked: 8f6ace99-36aa-4945-916c-a4a08514de2b - Exception: Performance test error 156
+Error tracked: 3fea013e-2d01-4348-890b-6196cbc4db95 - Exception: Performance test error 157
+Error tracked: 7904f50c-d7f0-4e30-b331-1a43d48536d2 - Exception: Performance test error 158
+Error tracked: 14dcc078-2251-4cfa-a177-fa8a33b54ce6 - Exception: Performance test error 159
+Error tracked: bc9b80a2-bb58-432b-9cb6-5d0a121410bf - Exception: Performance test error 160
+Error tracked: b4009e2b-6139-4939-a681-11e05eaab119 - Exception: Performance test error 161
+Error tracked: 39e26c76-fb80-4f22-a68d-eae1307cbd99 - Exception: Performance test error 162
+Error tracked: 1ac8fb3c-599b-48a1-a099-74e4d1a650b8 - Exception: Performance test error 163
+Error tracked: 0cde4083-98ce-4f09-a045-a588e07c84f2 - Exception: Performance test error 164
+Error tracked: a6c71e82-a5ca-4e8c-88d2-b470d169424e - Exception: Performance test error 165
+Error tracked: d488bd11-4c75-478a-bbe9-654c3067a93f - Exception: Performance test error 166
+Error tracked: 42619944-46d4-482d-b8e1-164c74888538 - Exception: Performance test error 167
+Error tracked: da52725a-b514-490c-84dd-94f1b9b73e6b - Exception: Performance test error 168
+Error tracked: e34d1bd0-2434-47c7-8f79-05a300725909 - Exception: Performance test error 169
+Error tracked: ba6e1827-8472-4b43-80bd-adb6c776019a - Exception: Performance test error 170
+Error tracked: 25bf4dbb-57d5-4a93-aa81-5674b61b94e2 - Exception: Performance test error 171
+Error tracked: b3187183-4b84-4a68-8618-fc13a895b337 - Exception: Performance test error 172
+Error tracked: 2fa47933-1060-4cd0-b3a9-1a1613ee52e0 - Exception: Performance test error 173
+Error tracked: 6bbde79d-707a-44a8-9a4e-3a5dcaf7709b - Exception: Performance test error 174
+Error tracked: e7dcdf6e-3d94-4201-a371-7ba02413ddf5 - Exception: Performance test error 175
+Error tracked: 7060f7d4-8689-4d10-8b01-27887fecd063 - Exception: Performance test error 176
+Error tracked: 93d9c306-5c60-4e74-aa39-2c6accdeb248 - Exception: Performance test error 177
+Error tracked: b71e87ef-51a4-4ccd-8e48-c952d7540700 - Exception: Performance test error 178
+Error tracked: 6bb1ce80-267a-4ecd-8b5a-8b93b986cbf8 - Exception: Performance test error 179
+Error tracked: 284a6d36-b958-47e8-b882-dcada66bbe74 - Exception: Performance test error 180
+Error tracked: faf538a8-f6a8-4fa0-8388-373779126246 - Exception: Performance test error 181
+Error tracked: 1cb92126-f68d-4426-801b-b26eef3793f3 - Exception: Performance test error 182
+Error tracked: 22e9770e-5bad-47c5-a956-bb22ab848aaa - Exception: Performance test error 183
+Error tracked: 03bb0e82-43a1-49c0-a283-ae8aa40cdfe9 - Exception: Performance test error 184
+Error tracked: c5056ec8-1eb1-43ce-b419-f3d1b6ff4ccd - Exception: Performance test error 185
+Error tracked: d6544a44-4d9b-4926-90bc-700fd0da7360 - Exception: Performance test error 186
+Error tracked: 236d2546-4a62-4cef-84f5-92b17af2531e - Exception: Performance test error 187
+Error tracked: 11759c11-ee42-41f6-a38e-93db765fab54 - Exception: Performance test error 188
+Error tracked: 37fb10f2-5249-4e5b-85ca-05ffb35616a2 - Exception: Performance test error 189
+Error tracked: 5231bea4-9480-4b24-875d-21fad0607254 - Exception: Performance test error 190
+Error tracked: a9c979f7-438b-4f85-9951-5488f5e3fb25 - Exception: Performance test error 191
+Error tracked: 8131c229-2ca2-4f40-890a-8c190ec5c838 - Exception: Performance test error 192
+Error tracked: 1d0adfe3-310e-4235-a920-3746935f43d2 - Exception: Performance test error 193
+Error tracked: 2fb67e17-f7f2-46c0-88ea-f11b82fe06b8 - Exception: Performance test error 194
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+Error tracked: e8b305b8-fda5-4ad2-a6ed-70e2e6a34f2a - Exception: Performance test error 195
+Error tracked: 6a32c414-fd55-4313-bc5e-5653ff80e3fa - Exception: Performance test error 196
+Error tracked: 18f436ff-d2fe-4768-ae77-f315aa70e046 - Exception: Performance test error 197
+Error tracked: fb73eeeb-9632-49d1-b53f-feeec2a0dacf - Exception: Performance test error 198
+Error tracked: 70d5ee78-31e6-413d-9e6c-be3bae2c9598 - Exception: Performance test error 199
+Error tracked: b87b2630-3c6b-4fb5-853f-a994d96a85b2 - Exception: Performance test error 200
+Error tracked: 0c393db8-293e-4022-b2f9-4beb5c9462f6 - Exception: Performance test error 201
+Error tracked: 725ddc4c-5dc3-49db-9cc0-799addd3c9ea - Exception: Performance test error 202
+Error tracked: 4dfd1fd9-acc7-446f-b849-11d3a660fd0e - Exception: Performance test error 203
+Error tracked: 4aecf95a-eef8-40c4-b8bf-531b1578d3f3 - Exception: Performance test error 204
+Error tracked: f042beb0-a4e2-4bcf-a39c-77fc3f617361 - Exception: Performance test error 205
+Error tracked: ec53173e-76cb-4aab-bf6e-855ee4171772 - Exception: Performance test error 206
+Error tracked: 78228716-ef1f-49c3-a08a-72da0cb0d156 - Exception: Performance test error 207
+Error tracked: 4d986858-05bf-419d-b94d-19a2ab4c021d - Exception: Performance test error 208
+Error tracked: 787e9e86-4787-4ee4-981f-330d179b741e - Exception: Performance test error 209
+Error tracked: 0342689a-1550-40ca-b5ba-587d848a1f05 - Exception: Performance test error 210
+Error tracked: 27c103d3-6a59-4546-969e-8b5b9f38d67b - Exception: Performance test error 211
+Error tracked: 6a137398-5ed2-44f2-9286-8a2ad4635593 - Exception: Performance test error 212
+Error tracked: 46cbc55e-4d90-46b8-8b5d-12a3e0548227 - Exception: Performance test error 213
+Error tracked: 4f7e50aa-68c6-4a6d-b197-8501ce9ff250 - Exception: Performance test error 214
+Error tracked: a2a3edec-ac73-4cd3-832b-cc3156a8f100 - Exception: Performance test error 215
+Error tracked: 2eeeaf6a-4388-435c-aca6-d0e0f4c8f374 - Exception: Performance test error 216
+Error tracked: 3f843f89-a3e9-4d9f-8de9-d49b8f87b9f9 - Exception: Performance test error 217
+Error tracked: 53652b34-34f9-4e0d-9f99-6c329e5eaaac - Exception: Performance test error 218
+Error tracked: 86f88a47-c1ac-43c5-9fc3-315c59e3f020 - Exception: Performance test error 219
+Error tracked: 49ff723f-6ef4-409c-808a-d4401ffc4b05 - Exception: Performance test error 220
+Error tracked: 5d3def22-ffb9-4f4c-988d-7124e8335930 - Exception: Performance test error 221
+Error tracked: 77b3b6a7-b6aa-4f6b-868f-145a1547bce0 - Exception: Performance test error 222
+Error tracked: 3e078f05-3707-4443-a81d-c248206ec2ca - Exception: Performance test error 223
+Error tracked: 37acb78d-7f13-48ba-a017-a9329dcfb770 - Exception: Performance test error 224
+Error tracked: 0eb550db-263a-4a20-b7c4-bc58fc977568 - Exception: Performance test error 225
+Error tracked: d26174f4-57df-467c-a2dd-10ec9b6d8ad2 - Exception: Performance test error 226
+Error tracked: 1dee4821-5615-4cf0-ab5e-5b68b7be7d5f - Exception: Performance test error 227
+Error tracked: ef0c7d27-29dd-4188-ab44-ddf12bf6fcbd - Exception: Performance test error 228
+Error tracked: b6f03cd4-16db-4955-9c1b-c93d4bb5e71b - Exception: Performance test error 229
+Error tracked: c4f6f054-997d-45d4-a923-e1f0a22933b6 - Exception: Performance test error 230
+Error tracked: bfe00fb9-6538-4d65-9307-009cc38b4967 - Exception: Performance test error 231
+Error tracked: 5912c0b9-3024-4e64-97a1-345ec8f1ec6e - Exception: Performance test error 232
+Error tracked: a472f15b-e535-45f7-b6c9-b22c5423d555 - Exception: Performance test error 233
+Error tracked: e3714106-0e53-44d3-9f60-b8faf5ac5c64 - Exception: Performance test error 234
+Error tracked: 84cbac6d-aee0-4a0a-9f05-1cd5487e8c24 - Exception: Performance test error 235
+Error tracked: f9695351-0592-461d-bd73-4f7bf3bc6b55 - Exception: Performance test error 236
+Error tracked: be8ac682-6ad6-4cd2-8d3f-4f855b6e8c44 - Exception: Performance test error 237
+Error tracked: 27bcde19-94e7-458f-a9cc-3b5317d66132 - Exception: Performance test error 238
+Error tracked: 3686665a-4fb8-4f3e-8cb2-9eef99b4209b - Exception: Performance test error 239
+Error tracked: 98c5d906-b663-4210-9efc-8c0ae0621884 - Exception: Performance test error 240
+Error tracked: 49f42322-6702-44a7-af6b-72e4ad251222 - Exception: Performance test error 241
+Error tracked: d68bbe3b-eefe-4994-b21a-921e1d65e447 - Exception: Performance test error 242
+Error tracked: 984ce966-8d35-488a-b1a1-0946e5975eeb - Exception: Performance test error 243
+Error tracked: 4cdc01d7-103d-45b9-bc2c-088aba947157 - Exception: Performance test error 244
+Error tracked: 63fc1da3-3430-44df-b2d7-566c16619d02 - Exception: Performance test error 245
+Error tracked: 6a5f7d02-dea8-494d-b447-a4c63c612fc2 - Exception: Performance test error 246
+Error tracked: f08f9ad8-62f2-4775-8a5e-a0554ec24d68 - Exception: Performance test error 247
+Error tracked: d9dddf77-37ea-48c9-9bc3-f4c4a8c9d427 - Exception: Performance test error 248
+Error tracked: 9c9561be-91b6-4841-af00-723ae61f5b17 - Exception: Performance test error 249
+Error tracked: 36ac5f36-e4b7-42b4-a0c7-a6a8e73cd3d1 - Exception: Performance test error 250
+Error tracked: 31032b06-bcb3-4b1b-b4ee-0b96b0ecc1a4 - Exception: Performance test error 251
+Error tracked: 19b3c3be-b23e-4417-a96f-4df41ca157c7 - Exception: Performance test error 252
+Error tracked: 6fb8c817-a007-4713-8852-473f2ea9c30b - Exception: Performance test error 253
+Error tracked: 7d46e566-9491-4911-a33e-569f91857ad9 - Exception: Performance test error 254
+Error tracked: efb0173e-3b82-49ed-982f-9ec33372659c - Exception: Performance test error 255
+Error tracked: 33500378-8738-4c76-a731-4e3ed7a5089e - Exception: Performance test error 256
+Error tracked: bf253cf6-3142-4248-8c36-030373c80c12 - Exception: Performance test error 257
+Error tracked: 7aa7eb8f-fa21-46ab-a388-450e176e86a1 - Exception: Performance test error 258
+Error tracked: 2cdc6512-c9c0-4524-b814-39f48984afc4 - Exception: Performance test error 259
+Error tracked: 9b33c942-1be8-44e6-abe9-fb6f381b78d2 - Exception: Performance test error 260
+Error tracked: b95fa224-2438-4365-b2f8-58e5fd05f381 - Exception: Performance test error 261
+Error tracked: bc1f3845-454c-4d33-9215-4353db769b2e - Exception: Performance test error 262
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+Error tracked: 8c08e530-6305-4249-babb-98526e8723db - Exception: Performance test error 263
+Error tracked: 56ddbe13-662c-47d2-9ae6-df83b00f3505 - Exception: Performance test error 264
+Error tracked: 24da1f18-76fa-4592-a5d9-d6d57b95ba11 - Exception: Performance test error 265
+Error tracked: 3f2628db-ff4f-43bc-aa6d-4e1fbc69b224 - Exception: Performance test error 266
+Error tracked: ead34e51-fd30-406a-897c-93522d818adf - Exception: Performance test error 267
+Error tracked: ef6ed605-96c5-460d-9033-03f97f5f420c - Exception: Performance test error 268
+Error tracked: 260543e6-3e50-4ea2-a917-7decfb665db1 - Exception: Performance test error 269
+Error tracked: c1adcf39-b221-4de2-928a-4ebcf6efc753 - Exception: Performance test error 270
+Error tracked: 038c293d-f04f-4396-b3e8-d6efab2d0ec4 - Exception: Performance test error 271
+Error tracked: 1e02142c-2de8-4296-830d-3854e7e1a61a - Exception: Performance test error 272
+Error tracked: 40cc730a-95ac-490e-a174-f0ba7ef2d4ff - Exception: Performance test error 273
+Error tracked: 5a4d2174-d8ab-44c5-a58f-812380677336 - Exception: Performance test error 274
+Error tracked: 56030ff9-c933-4514-8b6c-a76f31427b61 - Exception: Performance test error 275
+Error tracked: 2f80485b-834c-409c-9011-7d3dae337eed - Exception: Performance test error 276
+Error tracked: b965cb04-dfbd-475d-bff2-2db6915777e7 - Exception: Performance test error 277
+Error tracked: 491b7e91-1ae5-4360-b95a-4a309ef82372 - Exception: Performance test error 278
+Error tracked: ca6c600f-3731-4df5-a01e-6a312498d96c - Exception: Performance test error 279
+Error tracked: 805d2ad8-a368-42cc-846d-37876ca4389a - Exception: Performance test error 280
+Error tracked: 752cea46-f82c-444d-b75a-da3ff6d2c316 - Exception: Performance test error 281
+Error tracked: 96eab455-2097-416f-b80c-f2d03908e65c - Exception: Performance test error 282
+Error tracked: 2492aaab-91b9-485c-bab0-3b61aba73c61 - Exception: Performance test error 283
+Error tracked: a1051e3b-48ec-4610-90d2-ed141236490f - Exception: Performance test error 284
+Error tracked: ff5d4321-5531-4a2c-9286-f194b9d755ab - Exception: Performance test error 285
+Error tracked: 628cfa4a-3454-4d2b-97c3-9da698a3b3c8 - Exception: Performance test error 286
+Error tracked: ff2e859a-bf98-4da3-a24e-c13c902b5914 - Exception: Performance test error 287
+Error tracked: 2dc35b5e-9508-4dbb-ba73-5f7b8db76433 - Exception: Performance test error 288
+Error tracked: 14540ff1-07eb-4330-a300-dc2edc4e61fa - Exception: Performance test error 289
+Error tracked: 6744fffe-1591-4335-acc2-d168557a9d91 - Exception: Performance test error 290
+Error tracked: 5e50d723-067c-4fde-924f-39d7662a77a0 - Exception: Performance test error 291
+Error tracked: 29897dee-bda9-4992-99a9-13d96fdb7390 - Exception: Performance test error 292
+Error tracked: f0ab68b8-29fc-4b13-b2c0-f53540efc33f - Exception: Performance test error 293
+Error tracked: 226fc5dc-dc9d-4091-b54e-78e362f6c9b6 - Exception: Performance test error 294
+Error tracked: 8c5774cd-7f54-4d09-be74-600b4665644f - Exception: Performance test error 295
+Error tracked: 6b0da5e0-e942-45d3-9077-75bf40e4d40e - Exception: Performance test error 296
+Error tracked: d7b901c5-3ac0-4fde-9ccd-83b14acd325c - Exception: Performance test error 297
+Error tracked: a1ed040a-a9ce-4f08-bc4f-ebd067a0a7aa - Exception: Performance test error 298
+Error tracked: 1936ecd6-6642-4e07-86cb-8c3ecd088392 - Exception: Performance test error 299
+Error tracked: bccdf413-6b4a-4fd6-85d3-721336e2cd65 - Exception: Performance test error 300
+Error tracked: 728f5117-8a09-4257-a7b5-a0010707c3a7 - Exception: Performance test error 301
+Error tracked: ee3c1d81-b98c-4320-8263-97e2adc406fb - Exception: Performance test error 302
+Error tracked: 81c524c2-7487-44c6-9db8-178d4289a846 - Exception: Performance test error 303
+Error tracked: b55f5b56-6721-4046-9ece-501bf9fbfc6f - Exception: Performance test error 304
+Error tracked: 81f2dd28-099f-4757-aa34-284ce029a517 - Exception: Performance test error 305
+Error tracked: 28efcade-ec6f-44e1-a89f-9c6da0e39843 - Exception: Performance test error 306
+Error tracked: 42b1dd45-b120-4875-9b3a-38cf1a479d2a - Exception: Performance test error 307
+Error tracked: dfb79370-fa81-4f4d-abea-2195fdb20ee7 - Exception: Performance test error 308
+Error tracked: 4dad5d6e-266a-47eb-916b-24385cb99d47 - Exception: Performance test error 309
+Error tracked: eb8177c9-c574-44c2-9183-3d9fcd2c4956 - Exception: Performance test error 310
+Error tracked: d785cf3e-72dc-47db-9cc4-b625701ab83a - Exception: Performance test error 311
+Error tracked: 5e85ca94-a443-469b-8f85-ddadfc92bf5c - Exception: Performance test error 312
+Error tracked: 939b04c4-d3bf-4edb-b85c-4052286710f2 - Exception: Performance test error 313
+Error tracked: fcb51fd7-abd2-4563-891a-cd7cb6cb5e63 - Exception: Performance test error 314
+Error tracked: 0436454b-356b-4a17-812d-7523e393ce33 - Exception: Performance test error 315
+Error tracked: a7de7c4d-c10d-4661-8f30-77a535df97a2 - Exception: Performance test error 316
+Error tracked: c16c2e94-47bc-49df-984c-4e5f4363ae99 - Exception: Performance test error 317
+Error tracked: 5b489ba9-73cb-484f-a428-6c3d786a033b - Exception: Performance test error 318
+Error tracked: cb16c55a-cc92-4a8f-9036-7e8811a9ef15 - Exception: Performance test error 319
+Error tracked: df64ee72-97e8-4fd1-80c3-913059ffd83c - Exception: Performance test error 320
+Error tracked: 18205681-6044-49ef-a3ea-ba29d7bd4fd2 - Exception: Performance test error 321
+Error tracked: 810e1d88-6c58-462d-8e59-eb1f1a8f4c73 - Exception: Performance test error 322
+Error tracked: a30598d7-1b09-4401-8c0f-b3ec0fe22e45 - Exception: Performance test error 323
+Error tracked: 7415418c-1df4-4462-bcab-a2703693438f - Exception: Performance test error 324
+Error tracked: 24f1942e-c010-4bb5-ac21-6b8dcfb6e296 - Exception: Performance test error 325
+Error tracked: 80c57396-3237-40fe-af4a-d34bd31d0894 - Exception: Performance test error 326
+Error tracked: 3fc2fd43-131a-4eae-afb1-81a53c7afdbb - Exception: Performance test error 327
+Error tracked: cac2f480-bb61-4e48-82d1-4cb7d4dba2b4 - Exception: Performance test error 328
+Error tracked: 3f434cb3-5543-48b3-998a-f3e9f4c70722 - Exception: Performance test error 329
+Error tracked: 0cd753c3-689e-479d-b2fc-93c989eb8fcb - Exception: Performance test error 330
+Error tracked: 67e5ee10-2f72-4d34-8831-fc7da4da4f78 - Exception: Performance test error 331
+Error tracked: 819ae91e-bb2d-4e00-89bf-985f04cbf048 - Exception: Performance test error 332
+Error tracked: 550c6bfd-6e43-499e-8b2f-f898db16f81a - Exception: Performance test error 333
+Error tracked: 55a3d769-250d-44bc-8293-5c4c483407b6 - Exception: Performance test error 334
+Error tracked: 03362744-86b2-4468-b028-93a3e79a0375 - Exception: Performance test error 335
+Error tracked: 4f9cdbb2-a956-4b99-9a34-24b8475c7a52 - Exception: Performance test error 336
+Error tracked: 3df91700-9453-4877-9b34-69e1dba5333c - Exception: Performance test error 337
+Error tracked: e1a29944-dc89-4da5-a390-7280fa59b866 - Exception: Performance test error 338
+Error tracked: c739451a-b4af-4c3b-93c1-04845bb156a1 - Exception: Performance test error 339
+Error tracked: d3a15fb6-98af-4b2f-a486-29a557649389 - Exception: Performance test error 340
+Error tracked: fa010228-ae3f-44e2-bab1-2a485d935dd3 - Exception: Performance test error 341
+Error tracked: 8f0c0694-698d-457d-ad93-6e04ffc6e8ca - Exception: Performance test error 342
+Error tracked: cbd4aff4-18e1-4dce-92ef-2f8beb9384e1 - Exception: Performance test error 343
+Error tracked: 9566dd02-b668-4524-98c5-184fdee5ecec - Exception: Performance test error 344
+Error tracked: a5331a52-ceb0-49c7-88c4-d7da0657ec8b - Exception: Performance test error 345
+Error tracked: a7d1a816-1b4d-4a5d-880f-369173c350db - Exception: Performance test error 346
+Error tracked: 0c862db5-5eb0-4e22-b857-d70aec4aec85 - Exception: Performance test error 347
+Error tracked: 649d7d09-1b64-4623-85b0-67ebfad36320 - Exception: Performance test error 348
+Error tracked: 620a3116-bb57-4221-b6b1-75406d155620 - Exception: Performance test error 349
+Error tracked: aec44cae-cafe-4055-beca-7373c253bc1e - Exception: Performance test error 350
+Error tracked: 7591e781-fd43-4074-90dd-da0f6c48a6b6 - Exception: Performance test error 351
+Error tracked: b46f3a64-2c37-472d-a63e-7a002c839f07 - Exception: Performance test error 352
+Error tracked: 54920e38-2587-425d-833f-89d71660bb24 - Exception: Performance test error 353
+Error tracked: f6d099e4-085f-4189-809b-690f6588f8c0 - Exception: Performance test error 354
+Error tracked: d9d52184-cfab-447e-a3ad-af813530824e - Exception: Performance test error 355
+Error tracked: f8a10444-2556-4672-8b09-20d49bb6aa8d - Exception: Performance test error 356
+Error tracked: 58322437-b46b-4808-abb7-0b1313b62f7d - Exception: Performance test error 357
+Error tracked: f0d2fffe-4dc0-4add-8c79-30b1997d5dd8 - Exception: Performance test error 358
+Error tracked: 7f93e88b-9627-42de-8a6d-4f85ce0dfc0a - Exception: Performance test error 359
+Error tracked: 8d18a15e-0119-4fa4-b2ef-4221467bbc87 - Exception: Performance test error 360
+Error tracked: 403911b4-f43a-4c6e-8287-4d7c06f1d9d2 - Exception: Performance test error 361
+Error tracked: 774e7269-5232-4c40-a75f-2ce73f171ab9 - Exception: Performance test error 362
+Error tracked: ecdf25af-dcde-400f-aa9a-2d269c31de5f - Exception: Performance test error 363
+Error tracked: ebd9bc06-0787-40d4-af95-ae84689a67e9 - Exception: Performance test error 364
+Error tracked: 462d6373-63e5-4c94-ba25-4522dbf1069e - Exception: Performance test error 365
+Error tracked: ccfbf19c-d7c0-4188-bd61-422285f5b948 - Exception: Performance test error 366
+Error tracked: 121228f4-ec16-4b68-a710-41d8655e2fa6 - Exception: Performance test error 367
+Error tracked: 9798e5c9-630b-43cb-8fd7-c46cd32b4bc7 - Exception: Performance test error 368
+Error tracked: a49811a9-acc0-4d9b-a2d4-3a47ffd73868 - Exception: Performance test error 369
+Error tracked: 2298b84e-7bb1-4aaa-aee2-124e8957f85b - Exception: Performance test error 370
+Error tracked: c8f57f9f-59af-42d6-9138-0975ee8b651d - Exception: Performance test error 371
+Error tracked: 8cd1ca50-76bb-45dc-8de8-31580824752a - Exception: Performance test error 372
+Error tracked: f9964f43-516a-42f5-8044-07b7cb071b60 - Exception: Performance test error 373
+Error tracked: 46f467fa-5a90-40db-80cc-0b11b24183aa - Exception: Performance test error 374
+Error tracked: 546e1bc9-6a05-4c6c-a165-7389a1e3ef8b - Exception: Performance test error 375
+Error tracked: 584b4dad-3982-416c-94c2-a383d83dd074 - Exception: Performance test error 376
+Error tracked: bf421291-8663-4a98-91a3-12addcd0bc36 - Exception: Performance test error 377
+Error tracked: fa333306-ce2d-43ba-8aae-e3f381282df4 - Exception: Performance test error 378
+Error tracked: f45425b9-2109-4a0a-847b-608cc1677fd8 - Exception: Performance test error 379
+Error tracked: a43f945a-8383-461c-b6fb-91d213ec18a8 - Exception: Performance test error 380
+Error tracked: dfadd032-50f0-4520-af83-a91491bbe1c1 - Exception: Performance test error 381
+Error tracked: 0846deb7-c22b-41fb-aa35-3533b2c0b1b8 - Exception: Performance test error 382
+Error tracked: 6a99f4d3-5767-4c03-9d32-d4f117b74ffc - Exception: Performance test error 383
+Error tracked: 0a7e11aa-aa89-451a-9b72-ed02aac21d67 - Exception: Performance test error 384
+Error tracked: eec36f8d-ccd5-4751-9bc8-8e44536f306d - Exception: Performance test error 385
+Error tracked: 78f442fc-9073-420d-9cb3-8c1df93dd067 - Exception: Performance test error 386
+Error tracked: a6baedef-e047-4a9c-a131-064890709d82 - Exception: Performance test error 387
+Error tracked: ea6fbea7-d285-4e26-8c12-766e580a8213 - Exception: Performance test error 388
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+Error tracked: 84a88bdc-43a0-406d-aa37-d9d68ebb2f7e - Exception: Performance test error 389
+Error tracked: c22fca11-f66a-495a-a7b1-af25585ac08e - Exception: Performance test error 390
+Error tracked: 753876d1-bf25-42b7-a097-c74744c229ab - Exception: Performance test error 391
+Error tracked: a91a6626-57e9-4703-913e-099ca3869ef8 - Exception: Performance test error 392
+Error tracked: aaf1f672-c2c9-4df1-b649-816c3667a065 - Exception: Performance test error 393
+Error tracked: 2197e8a5-4e72-4e04-a913-de51f7f8130e - Exception: Performance test error 394
+Error tracked: bfd9c3e5-a973-48b9-a73e-e169f2f03860 - Exception: Performance test error 395
+Error tracked: 9462f970-0acf-4e77-80e2-3f58d4d1b95c - Exception: Performance test error 396
+Error tracked: e267ae59-0add-4143-9b79-e682e03418a4 - Exception: Performance test error 397
+Error tracked: de0bf256-8003-48be-bbc9-3154ca5da907 - Exception: Performance test error 398
+Error tracked: fe26b0fe-bcb2-4ab3-b8f1-4de3a8b96d0f - Exception: Performance test error 399
+Error tracked: 92f1ed57-02c8-4124-a56a-30f89b9656ca - Exception: Performance test error 400
+Error tracked: 7e606819-217f-4026-88fc-528898fcf7bf - Exception: Performance test error 401
+Error tracked: 63044516-146b-49db-9add-e556bc37594f - Exception: Performance test error 402
+Error tracked: 40768e3e-f4b3-4352-ad58-fd9ed3ecdfb4 - Exception: Performance test error 403
+Error tracked: 912df98b-c964-48e4-9ad7-830468279c37 - Exception: Performance test error 404
+Error tracked: 669356a0-a82c-41eb-ae1c-9268bf26cf1e - Exception: Performance test error 405
+Error tracked: 321773dd-8610-45cd-857f-19ff49b8869e - Exception: Performance test error 406
+Error tracked: 9fcdd538-443c-4b89-88c7-b432e2a6f8a1 - Exception: Performance test error 407
+Error tracked: f2132248-0dc4-4602-9568-ebd119604903 - Exception: Performance test error 408
+Error tracked: 19ef81e3-6ea1-4324-bd8c-302cf363d21f - Exception: Performance test error 409
+Error tracked: 1036ec50-521e-40cb-a0bb-8c59d3cd1e44 - Exception: Performance test error 410
+Error tracked: c7f5a18d-9bf3-4fb6-944d-0eda7ef2cb45 - Exception: Performance test error 411
+Error tracked: d4bba20d-514b-4b5c-8e83-c12f5a29c20e - Exception: Performance test error 412
+Error tracked: d2c07a6a-5620-4cc1-90af-ee3ca5abb530 - Exception: Performance test error 413
+Error tracked: 035497b8-ccc4-4aad-9c49-ac42dd405875 - Exception: Performance test error 414
+Error tracked: 3d5ee4f0-7ec7-4b87-8c88-b62a08430a4f - Exception: Performance test error 415
+Error tracked: b25309b2-441b-4258-9177-00031de88e03 - Exception: Performance test error 416
+Error tracked: bffc4300-5006-4c33-a089-3033dfe36642 - Exception: Performance test error 417
+Error tracked: d83081c1-ed25-406d-8b78-5907bc32add0 - Exception: Performance test error 418
+Error tracked: 85d72ecc-4728-497f-9729-49dd5de7efd5 - Exception: Performance test error 419
+Error tracked: 9583271e-85e0-4972-94e7-c723a77c332b - Exception: Performance test error 420
+Error tracked: 16e9f16f-2303-466b-9be9-2f3e037703dc - Exception: Performance test error 421
+Error tracked: 3ada26ee-e154-4729-98b0-c4d9adcf54c4 - Exception: Performance test error 422
+Error tracked: 8c3d8ea4-e889-4930-8682-5cb85f8a1aa0 - Exception: Performance test error 423
+Error tracked: b3fc71ee-21f2-49ed-82f0-930f9311079a - Exception: Performance test error 424
+Error tracked: bccd44ad-dae6-4327-aef2-fb98f70ef2cb - Exception: Performance test error 425
+Error tracked: b41cc2cb-a5a7-4f88-8fbf-5f5c68278160 - Exception: Performance test error 426
+Error tracked: 2cfdd809-e716-4129-9061-33ddd9d1f7cc - Exception: Performance test error 427
+Error tracked: 829cc578-4fb4-4e18-83ca-b7ed884c4582 - Exception: Performance test error 428
+Error tracked: f6d30210-0014-4e0b-914d-145dc2611e09 - Exception: Performance test error 429
+Error tracked: cdde5a1b-b0f8-47ef-97c8-6b6f99ef764c - Exception: Performance test error 430
+Error tracked: 533cbecc-8e32-4c3a-b3dc-a54f224cfa89 - Exception: Performance test error 431
+Error tracked: 2e142258-1140-41d0-bace-9d67ed82429b - Exception: Performance test error 432
+Error tracked: d6e40f29-a0c6-4c0a-b04d-b28f10ab1067 - Exception: Performance test error 433
+Error tracked: 9b83945a-a629-426b-b27d-ed9cee921e54 - Exception: Performance test error 434
+Error tracked: 7c2ad371-74b6-4e2d-b861-cca5e72847da - Exception: Performance test error 435
+Error tracked: 421a1e54-9095-44d3-842e-b9d023444a02 - Exception: Performance test error 436
+Error tracked: ec6c2caa-33c6-43d9-b7dc-2aa3624b8142 - Exception: Performance test error 437
+Error tracked: d92cb45c-2cde-42a4-af9d-e00f4b47af10 - Exception: Performance test error 438
+Error tracked: f941ee6b-b03a-4942-9483-56729106d46e - Exception: Performance test error 439
+Error tracked: eda22afe-1d09-4027-b8e5-484db55fac10 - Exception: Performance test error 440
+Error tracked: ffb7da84-4706-44ce-b142-ea08cef873fb - Exception: Performance test error 441
+Error tracked: 1d7bc610-3929-4279-872d-0f30f543aebb - Exception: Performance test error 442
+Error tracked: b58f765e-a588-4637-8630-eac36e25b811 - Exception: Performance test error 443
+Error tracked: 3a6cabdc-e927-4f6c-bb5a-646deabdb190 - Exception: Performance test error 444
+Error tracked: ace3868e-97fd-487d-852a-11fe398b9ffb - Exception: Performance test error 445
+Error tracked: a1ed4eaa-6c53-451d-be74-6a463cc566b9 - Exception: Performance test error 446
+Error tracked: 9eea40e6-c30f-4e5d-9e00-d4e17c5588e1 - Exception: Performance test error 447
+Error tracked: d2415afd-6f6e-4203-839c-798ec3862be7 - Exception: Performance test error 448
+Error tracked: beaebdce-6ecf-499f-af68-68abb793508f - Exception: Performance test error 449
+Error tracked: 439fcbb7-52c0-4318-b7c6-dc744d7e187a - Exception: Performance test error 450
+Error tracked: a8cfeb3d-9a94-4d24-9cfb-9971bf069256 - Exception: Performance test error 451
+Error tracked: f89557ad-6fc7-483a-bdc7-b659898fac41 - Exception: Performance test error 452
+Error tracked: f0d84f70-961e-43fd-8c48-e074f6b3b4a1 - Exception: Performance test error 453
+Error tracked: 0c841d02-5f55-4224-b2eb-d4805559d0de - Exception: Performance test error 454
+Error tracked: 570c0713-692a-4134-ae83-d659f11c8b90 - Exception: Performance test error 455
+Error tracked: 942d9c5d-0aab-4e13-af1b-1e5b320e66f0 - Exception: Performance test error 456
+Error tracked: a6be0962-f0e1-4993-b9a3-0b28da8b69bb - Exception: Performance test error 457
+Error tracked: bfd8bfa8-c533-4556-a7f0-58772d13fe50 - Exception: Performance test error 458
+Error tracked: d0004668-02fe-4196-b9a7-f85d5d8d33b9 - Exception: Performance test error 459
+Error tracked: 6d5434aa-8d3b-4c34-bc6c-4225db0bc90d - Exception: Performance test error 460
+Error tracked: e62fc94f-8159-432b-9952-9a4f8d6497d8 - Exception: Performance test error 461
+Error tracked: 24a821fa-c60d-43d3-aea2-5b5360ac6ee5 - Exception: Performance test error 462
+Error tracked: 44b593b2-f845-48e4-a0b3-4ca07bf216af - Exception: Performance test error 463
+Error tracked: ed8b788b-24c7-4729-b84b-20e0d4d308da - Exception: Performance test error 464
+Error tracked: d0de479b-4e61-4626-ad87-cf7f9d8cf6d2 - Exception: Performance test error 465
+Error tracked: 29cdde13-cfaa-422d-9d10-2ac9dda769b0 - Exception: Performance test error 466
+Error tracked: 720fcbb7-9aa3-4c23-92a0-a5a80459561c - Exception: Performance test error 467
+Error tracked: f7e8562c-92ef-4512-aa70-0467b89c009d - Exception: Performance test error 468
+Error tracked: 6b769d83-607d-4418-93f1-d07a42d35f9b - Exception: Performance test error 469
+Error tracked: 18ef9af3-2d35-458a-ac98-a0a18e47867b - Exception: Performance test error 470
+Error tracked: ccc653dd-3afe-45b7-9c9b-37cfb7a20007 - Exception: Performance test error 471
+Error tracked: 3e6bf400-40ab-4e40-8548-bdb9cb8fbea1 - Exception: Performance test error 472
+Error tracked: b906aad3-5a95-4093-a37e-15596a6d1364 - Exception: Performance test error 473
+Error tracked: 04eba6ff-50c6-4b69-8d43-441277a7de7b - Exception: Performance test error 474
+Error tracked: f16c0b47-09e5-4543-aeb6-da5c4dd6b6a4 - Exception: Performance test error 475
+Error tracked: dc74bb79-7401-4721-994d-d5703c8fba8c - Exception: Performance test error 476
+Error tracked: 935e8a9c-4076-4035-bf65-fe28140aebf6 - Exception: Performance test error 477
+Error tracked: b90be79d-76c9-42c5-9113-9cebb7937388 - Exception: Performance test error 478
+Error tracked: 08175f18-cc45-45be-9005-cb09d7e0b806 - Exception: Performance test error 479
+Error tracked: 11e4fb06-e979-43a5-a679-8ef84dcde98c - Exception: Performance test error 480
+Error tracked: 218efd94-7bda-4076-b6c0-3907091baf71 - Exception: Performance test error 481
+Error tracked: 77e491c3-41bd-49ed-9f00-2335fe276be5 - Exception: Performance test error 482
+Error tracked: c8b8a788-711a-4f37-bab1-da3ea51b5036 - Exception: Performance test error 483
+Error tracked: 9d9fb1ba-8e70-4e56-ad77-8698caa040d5 - Exception: Performance test error 484
+Error tracked: 3a9325c2-cb13-43b0-baad-474306ef72c9 - Exception: Performance test error 485
+Error tracked: bf55d6d8-1620-473b-be3c-8fcd541041f4 - Exception: Performance test error 486
+Error tracked: ef785289-0522-4335-b422-48bd5862fddd - Exception: Performance test error 487
+Error tracked: af450734-d0c9-4250-a957-83dc06df03e9 - Exception: Performance test error 488
+Error tracked: ff892f96-ea70-4694-a63b-f5ffbd090b5d - Exception: Performance test error 489
+Error tracked: cc585be8-b2d4-4b37-83a0-343e58fedfab - Exception: Performance test error 490
+Error tracked: f52d57bf-bc38-4685-ba0b-96e13054a206 - Exception: Performance test error 491
+Error tracked: 67d99d86-2bf2-4152-9f60-8e9bda8d2330 - Exception: Performance test error 492
+Error tracked: 69747783-f8b2-4cd6-bc62-77790e06457a - Exception: Performance test error 493
+Error tracked: 115fd414-a5e0-4453-ad83-05e575f415de - Exception: Performance test error 494
+Error tracked: 2e169787-6188-46db-aa13-617d9964eb67 - Exception: Performance test error 495
+Error tracked: ab7b3a4e-da5f-4d86-92d4-13e210947001 - Exception: Performance test error 496
+Error tracked: 39e0968b-214d-480b-9ff0-518878ba5d5b - Exception: Performance test error 497
+Error tracked: 18c8a7c7-53cb-44eb-8bdb-437e6ca81937 - Exception: Performance test error 498
+Error tracked: 43295f8a-52a4-47e1-8fa7-fbf816980f47 - Exception: Performance test error 499
+Error tracked: 86bbaa37-d599-42c8-814a-fb0a404add38 - Exception: Performance test error 500
+Error tracked: d7abacfb-bbc9-47b6-bb65-5277cd93377a - Exception: Performance test error 501
+Error tracked: ee985f9e-35b7-4bc5-aa0b-4eb152887e35 - Exception: Performance test error 502
+Error tracked: 8bd4ba59-7e48-4df1-a9d9-6a3c7a10e896 - Exception: Performance test error 503
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+Error tracked: 7c92db00-c3f0-4a72-ab4f-0a1ab3dfdb4b - Exception: Performance test error 504
+Error tracked: a0b10764-3851-489c-b4c4-ca00b92ef096 - Exception: Performance test error 505
+Error tracked: fa5b0f2f-5980-4be9-9ce8-96897447c7fb - Exception: Performance test error 506
+Error tracked: 02a5ea37-82b3-47a7-b8be-81aba48ad589 - Exception: Performance test error 507
+Error tracked: 0d6e597c-c72d-47ef-a303-2e1720a864af - Exception: Performance test error 508
+Error tracked: 3449d1b1-a950-4c23-9bc5-534464a1d6b9 - Exception: Performance test error 509
+Error tracked: 43d27db2-fdbf-4bca-b58a-6b93ed76520d - Exception: Performance test error 510
+Error tracked: 8c31c168-d0bf-4b82-b7b9-1bbbe884dcfe - Exception: Performance test error 511
+Error tracked: 8d146a6e-39cf-4330-9772-94af4c40d40c - Exception: Performance test error 512
+Error tracked: defa7efa-1a9d-4dc0-9673-c857f2dd1f52 - Exception: Performance test error 513
+Error tracked: 0cf9ecf4-ae75-4a5b-9f2c-30de6ad7f601 - Exception: Performance test error 514
+Error tracked: 595f4fae-4000-44a0-9463-964c06234bc3 - Exception: Performance test error 515
+Error tracked: 0d995c76-eff8-4691-bf40-ca02d386eca9 - Exception: Performance test error 516
+Error tracked: 210a31a1-a16a-48f8-b641-ae37b72761c0 - Exception: Performance test error 517
+Error tracked: 204e3b88-b98d-43b1-8140-792f380088a1 - Exception: Performance test error 518
+Error tracked: 85eef45c-f186-4a80-9f8a-047b06ee95e9 - Exception: Performance test error 519
+Error tracked: 0beb0b7d-fec1-471e-ba16-8e4e954d9612 - Exception: Performance test error 520
+Error tracked: d5b6e83f-af4f-470f-b4e5-d98756b26c9c - Exception: Performance test error 521
+Error tracked: 91ae4dcd-0f49-4f96-9fb8-38c9bed45476 - Exception: Performance test error 522
+Error tracked: 43e41877-256c-413e-9337-ea1acfa00c70 - Exception: Performance test error 523
+Error tracked: d80a2e92-23f5-4185-b414-139587b5849e - Exception: Performance test error 524
+Error tracked: e3ad9c22-96f1-4f4f-a0ec-b2d9348f4f83 - Exception: Performance test error 525
+Error tracked: 3885136c-0df8-46bd-8975-bfd309c00d30 - Exception: Performance test error 526
+Error tracked: 72692c7e-f210-4b53-9903-08a9067bf93b - Exception: Performance test error 527
+Error tracked: 70792c30-78f3-4312-a596-525a8a089f14 - Exception: Performance test error 528
+Error tracked: 53dcd261-e919-4050-9c5a-f4a168f2313d - Exception: Performance test error 529
+Error tracked: 3722c283-5f6e-41bd-ace5-79980dcd4937 - Exception: Performance test error 530
+Error tracked: 30037fb8-8354-489f-a01e-904903d8704c - Exception: Performance test error 531
+Error tracked: d683f490-14f0-4d00-ab20-d91760b2e156 - Exception: Performance test error 532
+Error tracked: 01477642-5341-4215-832a-236809783b38 - Exception: Performance test error 533
+Error tracked: 9069811c-5f83-4ed1-a60b-91bf610c9c80 - Exception: Performance test error 534
+Error tracked: 06a91a0f-2d49-4b6d-a863-8d8ed05f0a85 - Exception: Performance test error 535
+Error tracked: 1c4ba24e-9039-4712-ba24-126da2c7662a - Exception: Performance test error 536
+Error tracked: 4a41d688-cf3c-49b0-8b0a-73733684529e - Exception: Performance test error 537
+Error tracked: 69696f64-f743-4448-854a-5f45dfb300b6 - Exception: Performance test error 538
+Error tracked: a361d879-cb88-4d9e-8cc8-e1d650e10c5f - Exception: Performance test error 539
+Error tracked: 982d25b4-406e-4199-a678-fd71ddce7773 - Exception: Performance test error 540
+Error tracked: 00ee6f2b-2461-4332-ae36-ff730283a7cf - Exception: Performance test error 541
+Error tracked: a9b309f8-3056-4862-958d-d856ec48bed2 - Exception: Performance test error 542
+Error tracked: eaeccb49-d369-4d30-924d-e8514b6bf013 - Exception: Performance test error 543
+Error tracked: 3009961c-ab6b-4dea-b185-a68fd0f6fe51 - Exception: Performance test error 544
+Error tracked: 1afcc2b9-7ade-4a41-95ae-289939400c76 - Exception: Performance test error 545
+Error tracked: bda5db00-9a31-4e0a-9774-a43daf8fa0d7 - Exception: Performance test error 546
+Error tracked: a0c58b54-212a-4b39-b05a-002af0c93a0e - Exception: Performance test error 547
+Error tracked: cfd9182f-6109-4614-930a-8dc53e16abe1 - Exception: Performance test error 548
+Error tracked: d17d3e43-94f3-42cf-a50d-7ca750eccfff - Exception: Performance test error 549
+Error tracked: 46c60991-24f2-4e5b-9a27-b1bebe44abfd - Exception: Performance test error 550
+Error tracked: 6a2f6ad9-248d-46fd-aad3-1d34b60fb1d6 - Exception: Performance test error 551
+Error tracked: 5f0c0a6d-9c01-4909-881d-a25014e4cfcd - Exception: Performance test error 552
+Error tracked: d34d8b0f-a608-475a-b2f5-0c60f18a5fb4 - Exception: Performance test error 553
+Error tracked: 7776759e-1b57-4ca4-93bd-af14673efe98 - Exception: Performance test error 554
+Error tracked: 995973ed-1705-4516-9adb-651a1130056e - Exception: Performance test error 555
+Error tracked: 0410663d-01ae-4c88-8018-ee4311714b64 - Exception: Performance test error 556
+Error tracked: d451f0b2-8e90-4ed8-8910-82031e238f7f - Exception: Performance test error 557
+Error tracked: 4677d767-c4cc-4854-8da9-b96ecdac9fe0 - Exception: Performance test error 558
+Error tracked: 334d2a4e-4654-432d-b495-753feb03d7d7 - Exception: Performance test error 559
+Error tracked: 4c0d663c-c6bc-4c3e-a2eb-d711fe6fea85 - Exception: Performance test error 560
+Error tracked: 089e22ee-5adb-45e7-aada-68a44b68d4b8 - Exception: Performance test error 561
+Error tracked: 20b59323-bf26-4bbc-ae50-125d592b241c - Exception: Performance test error 562
+Error tracked: 14d42e80-dc80-418e-81f0-ba9b51613838 - Exception: Performance test error 563
+Error tracked: b26c753f-2b22-4a6a-b7c1-97120a06616d - Exception: Performance test error 564
+Error tracked: ad94a65d-1a90-4467-b295-c751e86704e2 - Exception: Performance test error 565
+Error tracked: 81da3ef4-774f-4eda-9b3c-ce79a2a71f46 - Exception: Performance test error 566
+Error tracked: 11cc5aac-2e1a-449c-a2f1-5881ba1b2277 - Exception: Performance test error 567
+Error tracked: 2e686156-2b13-4309-9738-8a3a5664b22c - Exception: Performance test error 568
+Error tracked: 2ccacd8d-9314-4e60-965e-1fdfc4152bf6 - Exception: Performance test error 569
+Error tracked: 09850890-a1ef-471d-a3e0-3a0d834ae5e9 - Exception: Performance test error 570
+Error tracked: 70f6dfd3-0ae0-4f19-a207-625b08c9e126 - Exception: Performance test error 571
+Error tracked: fe18957d-c7da-455d-a9f9-e521b2b76078 - Exception: Performance test error 572
+Error tracked: caa2e1a1-f47f-4dc1-b121-afb2bb9d80ab - Exception: Performance test error 573
+Error tracked: a4dd528d-fe66-4d01-8675-a838109daa27 - Exception: Performance test error 574
+Error tracked: 5f84e1cb-3e2d-4a00-bca2-2436997e6790 - Exception: Performance test error 575
+Error tracked: f3ab39ea-8db1-425b-bb33-68c967189b67 - Exception: Performance test error 576
+Error tracked: 66c12b3c-1cad-4e5e-bbce-9ef55757429e - Exception: Performance test error 577
+Error tracked: 324a1ac0-85d6-4bf9-b67e-df216f1bf4ed - Exception: Performance test error 578
+Error tracked: 85386299-9239-420b-bf5a-01dfaf7a8e85 - Exception: Performance test error 579
+Error tracked: 609c20e0-32f5-4229-912d-9b6eb91a6f4b - Exception: Performance test error 580
+Error tracked: b2c62937-613b-4e33-8a54-af0376344c9a - Exception: Performance test error 581
+Error tracked: c2d766c2-4cf4-478d-8660-1a5e842b97fd - Exception: Performance test error 582
+Error tracked: b406da49-b98b-4073-9f2c-e46a99649566 - Exception: Performance test error 583
+Error tracked: c53881fa-ac5a-4502-bb01-e8e1532bf12b - Exception: Performance test error 584
+Error tracked: f23fb467-806d-420d-aa37-87369e2c4214 - Exception: Performance test error 585
+Error tracked: 94647478-a426-482b-8ca0-5e039334483d - Exception: Performance test error 586
+Error tracked: d86cf546-c028-4389-810b-c2eb8222672b - Exception: Performance test error 587
+Error tracked: c2b0c5f5-fd0d-4b62-a51c-66a807117c0f - Exception: Performance test error 588
+Error tracked: 31df0055-05fe-4da5-9bc1-7442e07249ba - Exception: Performance test error 589
+Error tracked: 4c7f8e15-4f8d-4776-82d2-3667c3e6ca56 - Exception: Performance test error 590
+Error tracked: 0b0fb0a9-2cc5-45cc-9b00-ad6f2585a5b1 - Exception: Performance test error 591
+Error tracked: 6ec8fe97-6438-4aaa-a5b6-1970ba3bfc94 - Exception: Performance test error 592
+Error tracked: 6831b5d8-e797-4e94-a4ff-bf50ff2655cb - Exception: Performance test error 593
+Error tracked: 8d71e0a2-5c90-4f98-97cb-d10e6286497f - Exception: Performance test error 594
+Error tracked: d6596917-351e-4337-993f-21e6e58718b6 - Exception: Performance test error 595
+Error tracked: 7d97f400-84fc-4984-b30d-638345c014b0 - Exception: Performance test error 596
+Error tracked: 04f432f6-fc24-4ae9-8081-8466cc4e98c6 - Exception: Performance test error 597
+Error tracked: 3b612947-c304-4207-b5eb-801bb7b21e56 - Exception: Performance test error 598
+Error tracked: 8101c602-5d9e-4756-b3ad-9e71e71a937a - Exception: Performance test error 599
+Error tracked: 79045e07-e5f1-4526-ae84-568729353182 - Exception: Performance test error 600
+Error tracked: c80de8bc-669f-4456-a6e2-42c23ef562d8 - Exception: Performance test error 601
+Error tracked: 7186e45d-bbb3-4b3f-bb42-815a3984c951 - Exception: Performance test error 602
+Error tracked: bbb622c4-2e85-485e-9bda-f0d98ec2399f - Exception: Performance test error 603
+Error tracked: b8d64cc1-8aa7-45fa-82cf-404171b11687 - Exception: Performance test error 604
+Error tracked: 159286e3-a929-45aa-b686-5d6a711a7744 - Exception: Performance test error 605
+Error tracked: adb2abfa-0bbe-4d69-bd4d-d78db5935326 - Exception: Performance test error 606
+Error tracked: ab2fb392-f421-4460-a9a3-d5d19928dcba - Exception: Performance test error 607
+Error tracked: 0eee4314-5303-4033-9fc9-86f7dc971def - Exception: Performance test error 608
+Error tracked: 02d7e36b-93c4-40f2-8ae5-552793b97c97 - Exception: Performance test error 609
+Error tracked: 6f5e5f59-dd65-4187-81ce-191f3c483260 - Exception: Performance test error 610
+Error tracked: 95eaa6d3-715f-4791-bc2d-241b585aee3c - Exception: Performance test error 611
+Error tracked: 30435c81-08c4-470d-b0ba-7129f407a8b5 - Exception: Performance test error 612
+Error tracked: 3b5ebbad-7402-42e5-93a6-ae897f1eee81 - Exception: Performance test error 613
+Error tracked: ef512880-85da-41ff-bfbc-1d54da33ace0 - Exception: Performance test error 614
+Error tracked: c8fc52ac-c503-426a-bf1b-cfa0f83bd331 - Exception: Performance test error 615
+Error tracked: 222473c9-cd01-4b17-bf50-c6a1ff23d735 - Exception: Performance test error 616
+Error tracked: e6ea125b-3d0b-4121-81b9-b9d9b6318a17 - Exception: Performance test error 617
+Error tracked: 4ada6008-f073-4b7b-a60c-d63502a979a5 - Exception: Performance test error 618
+Error tracked: 76857bc3-efba-4875-998e-d006d5688898 - Exception: Performance test error 619
+Error tracked: fae8d8a8-0a08-409e-a103-a018821440d4 - Exception: Performance test error 620
+Error tracked: 6f53c7bc-b4be-4a97-a37e-ade4e8053899 - Exception: Performance test error 621
+Error tracked: a1bd178f-4dc5-49f8-a6ac-1191118dec8b - Exception: Performance test error 622
+Error tracked: 8cd32672-af14-4648-9832-f92f8df30181 - Exception: Performance test error 623
+Error tracked: 5787fd9f-4bcd-4835-9d20-a79bf5448bf6 - Exception: Performance test error 624
+Error tracked: f1df4dae-9eb4-4452-8abd-93b0af4dbf2c - Exception: Performance test error 625
+Error tracked: 62d9b479-9e9b-4bcd-905d-a77bc28024ec - Exception: Performance test error 626
+Error tracked: f0e62a35-9fd0-4d31-be14-bae3d9925982 - Exception: Performance test error 627
+Error tracked: 983d94a0-e3d6-4326-8601-e2d81f6932da - Exception: Performance test error 628
+Error tracked: f3991576-697d-4272-a291-6737284a6548 - Exception: Performance test error 629
+Error tracked: a54a0e03-7efd-4e19-80c9-e3bce18e9a26 - Exception: Performance test error 630
+Error tracked: 0f92f68c-32a5-4a2e-9194-0283dac33a77 - Exception: Performance test error 631
+Error tracked: 5ba3ca12-ef8f-46ec-8459-671f136d7099 - Exception: Performance test error 632
+Error tracked: f9f72633-41c5-4e69-8e55-fffb49663511 - Exception: Performance test error 633
+Error tracked: 8f0174cc-a73b-4ce6-b084-fe5cc670edbd - Exception: Performance test error 634
+Error tracked: 00eef335-64be-4e64-b736-a2db4cc4c8d7 - Exception: Performance test error 635
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+Error tracked: a011b0e5-c46f-4b1e-928d-a0f421ad9afc - Exception: Performance test error 636
+Error tracked: 5949c744-83c4-4e78-b189-d3a0c6da126f - Exception: Performance test error 637
+Error tracked: 9288d7f9-1f9e-42cb-a10d-72324800953b - Exception: Performance test error 638
+Error tracked: 3f0f88d1-cf06-492d-96af-17237046a61e - Exception: Performance test error 639
+Error tracked: b17e0913-ea6b-4012-a920-15f6d818506a - Exception: Performance test error 640
+Error tracked: 86615b17-8c7f-4475-aeb3-f97e7bae08d0 - Exception: Performance test error 641
+Error tracked: 745357d5-327f-4f94-81aa-b1066f0944e5 - Exception: Performance test error 642
+Error tracked: 9c95f695-effc-4e8e-8cde-c94dc0bbbd5b - Exception: Performance test error 643
+Error tracked: 398eaa63-3468-4680-96d7-3ddba1977a31 - Exception: Performance test error 644
+Error tracked: 5e2479d6-115c-4185-978c-bc6db8170918 - Exception: Performance test error 645
+Error tracked: e1590579-1f3c-461b-9e58-2285b96644e4 - Exception: Performance test error 646
+Error tracked: b8cc0a07-49a7-4acb-a504-4cb379ca39c5 - Exception: Performance test error 647
+Error tracked: baf604fb-b1db-4266-9693-6d46e4bbdc2d - Exception: Performance test error 648
+Error tracked: 80aebe7d-f00b-45fa-99bb-01c942ec4352 - Exception: Performance test error 649
+Error tracked: bb49bd2d-c1c8-4a69-9b97-d799434e0315 - Exception: Performance test error 650
+Error tracked: 5c9cd6d4-d46a-4bce-9e1a-f2ff35252c6b - Exception: Performance test error 651
+Error tracked: acecd67e-c4e1-4af9-9ed0-c264db203a83 - Exception: Performance test error 652
+Error tracked: f44b7404-e431-42f2-9ab7-cb19f272b61d - Exception: Performance test error 653
+Error tracked: bf2c780a-4d10-4899-9662-442f6a1c2c51 - Exception: Performance test error 654
+Error tracked: 03bafdfa-34eb-461b-bb05-cff40710fea5 - Exception: Performance test error 655
+Error tracked: 030a6b46-b167-428f-9097-6acda58a039a - Exception: Performance test error 656
+Error tracked: c3a4287f-6f99-44ab-898c-4b07504c024d - Exception: Performance test error 657
+Error tracked: 517d95e2-b9e4-4c80-8e86-07c4980aaec1 - Exception: Performance test error 658
+Error tracked: f09b8007-d344-4549-a3be-dcbe42dc8e70 - Exception: Performance test error 659
+Error tracked: fbdb9b95-a4b3-4c38-9c16-76dddd7498fa - Exception: Performance test error 660
+Error tracked: 19021126-099f-4348-919f-50b1941edd54 - Exception: Performance test error 661
+Error tracked: 964fcabd-5a1b-4fe4-a287-30c80c525986 - Exception: Performance test error 662
+Error tracked: 0d98e6e2-06c6-435a-b64b-3ef82382de0b - Exception: Performance test error 663
+Error tracked: 67e6cd5e-2b04-4911-9055-c53d2bfa9f21 - Exception: Performance test error 664
+Error tracked: 155534f1-157d-4936-a665-f8b32c8c3013 - Exception: Performance test error 665
+Error tracked: 0733064c-ccd8-49c7-8372-f3f6f5745493 - Exception: Performance test error 666
+Error tracked: c5461ab2-e24f-4cc6-b199-9aa624a126d0 - Exception: Performance test error 667
+Error tracked: ee76ef69-7ecf-40e3-b0e7-7285ad8c6879 - Exception: Performance test error 668
+Error tracked: 28039019-8a9f-4afe-82c9-d09436ff357e - Exception: Performance test error 669
+Error tracked: 09b8fd0b-4d4a-446d-a469-4a6263ca2542 - Exception: Performance test error 670
+Error tracked: ed5c01d6-7a53-4ab3-8985-c873e300daab - Exception: Performance test error 671
+Error tracked: 0359c2d3-fb12-4863-95e0-003583abd76c - Exception: Performance test error 672
+Error tracked: b5ca59b4-47f9-43bc-a752-9160a486afa3 - Exception: Performance test error 673
+Error tracked: 00813cc5-a927-4988-93b1-68c36e1e4d51 - Exception: Performance test error 674
+Error tracked: d2ba10fa-7f36-4d7d-ac1b-1f2534e91599 - Exception: Performance test error 675
+Error tracked: be412778-409e-433c-9f9c-be098929aa48 - Exception: Performance test error 676
+Error tracked: e261491e-ba57-49b6-a2e0-8b49c4065639 - Exception: Performance test error 677
+Error tracked: 6390a606-a633-47e2-bea4-09b5a180dfe7 - Exception: Performance test error 678
+Error tracked: 629dd100-cf16-4b5a-8aff-2639a772bb1e - Exception: Performance test error 679
+Error tracked: 0c78fdb0-5c29-4809-84fa-04a1215691c7 - Exception: Performance test error 680
+Error tracked: 884ee49a-8c03-427b-b4f9-edaf701834b7 - Exception: Performance test error 681
+Error tracked: c1bef8f4-f20e-4e61-9f67-a380c5903c72 - Exception: Performance test error 682
+Error tracked: e3770aac-8090-4b10-aeda-a44a51a99bd4 - Exception: Performance test error 683
+Error tracked: 8f861c71-09c8-49b9-930d-a302a769a1fe - Exception: Performance test error 684
+Error tracked: 8d411ccb-f2f5-4049-9494-9ff6bc951edf - Exception: Performance test error 685
+Error tracked: bc86f839-7242-418d-bff4-1eef0ec59476 - Exception: Performance test error 686
+Error tracked: a9c53705-809f-4fca-a04e-799b68fd823b - Exception: Performance test error 687
+Error tracked: e6c0f89f-8aa3-4b82-ad62-ab0a830a7c7a - Exception: Performance test error 688
+Error tracked: 85415f99-29b5-4e65-9057-f3f65c2d3081 - Exception: Performance test error 689
+Error tracked: 404bbc3d-7033-42c3-8c50-55722044f196 - Exception: Performance test error 690
+Error tracked: 922bb0ea-d7f7-4a4b-aa4c-4964a10858a6 - Exception: Performance test error 691
+Error tracked: 93ea6614-bc05-4850-9367-4879d8adde12 - Exception: Performance test error 692
+Error tracked: 5b46330f-977d-4c6c-86c3-950bde02bce5 - Exception: Performance test error 693
+Error tracked: e1ca695e-de83-479b-9982-df407235b7aa - Exception: Performance test error 694
+Error tracked: 360eb9b4-6b3e-4f7b-b280-7b328a266499 - Exception: Performance test error 695
+Error tracked: 0fddd26b-1109-4361-83bc-f86149ad11a0 - Exception: Performance test error 696
+Error tracked: 864ddbfa-4e19-4e0d-96a4-96beb232d5cd - Exception: Performance test error 697
+Error tracked: e9969115-53ac-4ab6-857e-1a9d1fe7f61c - Exception: Performance test error 698
+Error tracked: 2c1befde-9d0e-4f1c-bf3e-d83d633f2344 - Exception: Performance test error 699
+Error tracked: e3037903-4c52-453b-a945-cf45dacf946b - Exception: Performance test error 700
+Error tracked: 7d3f509a-0f0f-4300-8057-a2e9b6f7c5d0 - Exception: Performance test error 701
+Error tracked: d1b7f612-0b1a-4bcd-8684-98282fcb43a9 - Exception: Performance test error 702
+Error tracked: 61041a21-9a63-41f3-bdcc-be3219df1ee6 - Exception: Performance test error 703
+Error tracked: 5c20d73a-bb25-4e1e-91ee-21afd3b65207 - Exception: Performance test error 704
+Error tracked: c7cfa7be-adec-42ed-90fd-22ed87770625 - Exception: Performance test error 705
+Error tracked: 0703aceb-7477-4428-890b-630a74bc4021 - Exception: Performance test error 706
+Error tracked: 158a812e-cc07-4e20-88de-102f6cd41f5f - Exception: Performance test error 707
+Error tracked: 50a88a1c-2592-4970-aafd-c36de5ba19c3 - Exception: Performance test error 708
+Error tracked: 408d9b4a-352f-4e32-84b4-60f232e49f5f - Exception: Performance test error 709
+Error tracked: 4080f7fb-24a0-4d83-8994-2982d6a69504 - Exception: Performance test error 710
+Error tracked: ab70952b-3e1a-452a-a42a-5a59049abfe4 - Exception: Performance test error 711
+Error tracked: 6128b750-15da-4b97-bb20-4d6db7d87eae - Exception: Performance test error 712
+Error tracked: db8646ae-0fb3-4fa7-9d90-dc821829ed51 - Exception: Performance test error 713
+Error tracked: 0de1d547-2458-4bad-9e83-769569a3560b - Exception: Performance test error 714
+Error tracked: 14dc9217-bac0-498c-be64-9c7f1fca3300 - Exception: Performance test error 715
+Error tracked: 696c7509-2cb2-4f55-81ea-c770c664acc2 - Exception: Performance test error 716
+Error tracked: ff4a2c02-935e-409c-bad1-7fd7f5a694f6 - Exception: Performance test error 717
+Error tracked: 31fd30fa-fb41-4e11-8a2e-7c668b1e89e1 - Exception: Performance test error 718
+Error tracked: f437ff9d-42f3-4e2b-b1d1-d09ea42912f8 - Exception: Performance test error 719
+Error tracked: 906ca3a1-f745-4723-b97c-c8fb4c473413 - Exception: Performance test error 720
+Error tracked: f3f9d280-2ab4-4a7b-a0aa-e191db7cddc0 - Exception: Performance test error 721
+Error tracked: 13d80bbc-7389-4071-bd55-6e61c4e3ff85 - Exception: Performance test error 722
+Error tracked: 706d0778-5934-4a99-afa9-413dadf054d5 - Exception: Performance test error 723
+Error tracked: e1b08875-450c-4a05-bbe0-9384e863523d - Exception: Performance test error 724
+Error tracked: ddfe00f0-882e-480c-a57a-9b0f84842daa - Exception: Performance test error 725
+Error tracked: 684a254d-2202-41aa-9a3d-7eabc61a0838 - Exception: Performance test error 726
+Error tracked: c56df7d4-732b-4612-9dc7-814a2e669248 - Exception: Performance test error 727
+Error tracked: 4526ec70-c88f-43ef-bc15-a2de8d15ed9f - Exception: Performance test error 728
+Error tracked: a93a0bf3-1a10-4139-a049-80af50ee9b2b - Exception: Performance test error 729
+Error tracked: ee0e364d-933b-4c69-ab45-2ab983426004 - Exception: Performance test error 730
+Error tracked: eec9a61d-a5c1-4819-857e-fc51186146c4 - Exception: Performance test error 731
+Error tracked: 1de4eff6-f95b-414c-9a63-9ad820162350 - Exception: Performance test error 732
+Error tracked: d99010ba-0ddb-4d03-bd8c-48d838e77571 - Exception: Performance test error 733
+Error tracked: f0762d51-5c87-4262-8a26-168d5a5e32cd - Exception: Performance test error 734
+Error tracked: 4d4b6f4b-6f35-43e2-a6b4-2d7c276a0cea - Exception: Performance test error 735
+Error tracked: 43a3ad88-c004-45ec-804b-c4809d6de585 - Exception: Performance test error 736
+Error tracked: a517e8cf-e1de-48e0-9981-9d88e7cd0f26 - Exception: Performance test error 737
+Error tracked: 44682187-09a9-4dd0-b496-a61680684378 - Exception: Performance test error 738
+Error tracked: 55637e11-1350-490d-bcc4-27d291fd4b3a - Exception: Performance test error 739
+Error tracked: 3d14e011-3f6d-4d5f-bc8d-191ec6715d30 - Exception: Performance test error 740
+Error tracked: 0d94e5b0-b300-49a3-b8e7-47ffead2c08f - Exception: Performance test error 741
+Error tracked: a39afe9f-32b9-477e-8c33-970d23777b66 - Exception: Performance test error 742
+Error tracked: 0b9ad0dd-b431-45db-abbd-cdc11cfdb006 - Exception: Performance test error 743
+Error tracked: 817e7b5b-a579-4d05-8a94-e33c8feb89be - Exception: Performance test error 744
+Error tracked: 9256e6a2-4d40-4b52-8c97-8c187fd79aaf - Exception: Performance test error 745
+Error tracked: 65f15268-16eb-4607-858f-b65210eeaf05 - Exception: Performance test error 746
+Error tracked: fc561f6b-95f8-4255-a445-b3ffe07ccb1a - Exception: Performance test error 747
+Error tracked: 3fd35f04-c64b-4524-be13-846a968df59b - Exception: Performance test error 748
+Error tracked: 498e5acf-5352-46b8-b8ef-8efbd53d1029 - Exception: Performance test error 749
+Error tracked: 4058ee27-2160-4255-8001-c43f6cb93b17 - Exception: Performance test error 750
+Error tracked: 2a94d863-7546-4126-bd53-42b0b80c9f41 - Exception: Performance test error 751
+Error tracked: d026e214-ef90-40b2-a7e7-ac6e91132e72 - Exception: Performance test error 752
+Error tracked: bfe65fde-bc19-402a-a0a6-0e5c97f03297 - Exception: Performance test error 753
+Error tracked: dc43deaf-191a-4166-8a57-47f5fbc62275 - Exception: Performance test error 754
+Error tracked: 0268a55c-9e65-4672-b3aa-3fae0092670b - Exception: Performance test error 755
+Error tracked: 3afbbad7-45be-4295-8ced-9c42352b4eda - Exception: Performance test error 756
+Error tracked: 7e82b91a-d3ac-4b0a-aa6b-8c2afc8c54e6 - Exception: Performance test error 757
+Error tracked: 138ac5ac-c8e8-48a0-bc15-68359e86a2d0 - Exception: Performance test error 758
+Error tracked: 2e94940e-451c-464d-b7e8-f9a15fe83133 - Exception: Performance test error 759
+Error tracked: 3b84cdcf-2258-4ed4-9ced-4ae92a6da2b1 - Exception: Performance test error 760
+Error tracked: c1ee91b4-f804-4166-9f6f-88eb7f8e2285 - Exception: Performance test error 761
+Error tracked: 1be12322-a75a-48c6-9cb0-acf29aed62c4 - Exception: Performance test error 762
+Error tracked: 0fffd8fd-d95c-425e-9bde-c0fd77a139ad - Exception: Performance test error 763
+Error tracked: 498bb77b-e0b6-4cbe-a2d1-37fa379bcf56 - Exception: Performance test error 764
+Error tracked: 0121963d-0b18-4253-8397-435ae709b7c4 - Exception: Performance test error 765
+Error tracked: ea512ec8-4550-4396-aeb9-49c97414e946 - Exception: Performance test error 766
+Error tracked: 473117a8-c9c8-44cd-ba63-d5080908a51c - Exception: Performance test error 767
+Error tracked: ee747db9-dcee-426d-abd5-bb75a2d8ce0c - Exception: Performance test error 768
+Error tracked: ccf4a756-fe43-49cc-a5ad-76bdb24cfa35 - Exception: Performance test error 769
+Error tracked: ef0de182-da2a-42f3-b5a6-c6cbeb6b6105 - Exception: Performance test error 770
+Error tracked: 24831330-d8a7-47a8-91e3-af1e32adf943 - Exception: Performance test error 771
+Error tracked: e8708822-4ac5-49fa-9b80-9adc65c787e2 - Exception: Performance test error 772
+Error tracked: 3c25a65a-b4f8-43cb-8842-8b06b8966ba2 - Exception: Performance test error 773
+Error tracked: a7000dcd-218c-4f48-a5c3-0635c9724e64 - Exception: Performance test error 774
+Error tracked: 6cb667a6-5fef-4c09-8a43-180428818a5f - Exception: Performance test error 775
+Error tracked: f2b04ac6-04f8-4b28-8a37-43e3e2e210c8 - Exception: Performance test error 776
+Error tracked: 6f6398d6-71e1-44be-a691-f09c9ef9675a - Exception: Performance test error 777
+Error tracked: 6391ae67-98a3-49dd-b18a-c68a940cc9cb - Exception: Performance test error 778
+Error tracked: 61bda82c-731f-44f9-a3c6-0f40c739c396 - Exception: Performance test error 779
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+Error tracked: b021f66e-2cb2-4146-aa50-6af38f160ed1 - Exception: Performance test error 780
+Error tracked: b179c72f-74e4-4d6b-a6f1-f96751d18ff8 - Exception: Performance test error 781
+Error tracked: 3d675f53-7272-4af2-b953-f17f3ed74305 - Exception: Performance test error 782
+Error tracked: aa3f55f5-1567-4977-a678-65052ef29dc2 - Exception: Performance test error 783
+Error tracked: 7296442f-3a06-420c-8864-84afaaf6bae0 - Exception: Performance test error 784
+Error tracked: 59fe7b9d-d014-481a-bdd5-61ffda66a7f4 - Exception: Performance test error 785
+Error tracked: 7ede2eec-40cf-4166-8ac5-dd276d4c5701 - Exception: Performance test error 786
+Error tracked: 77878c50-dbee-4522-be04-ec6403367a0a - Exception: Performance test error 787
+Error tracked: 9d0adfb1-1d33-4160-a8b5-241ec04e9314 - Exception: Performance test error 788
+Error tracked: 759d861d-f899-4772-929b-964f94b169e8 - Exception: Performance test error 789
+Error tracked: c965c81d-a0e1-4160-8ab3-48979275f196 - Exception: Performance test error 790
+Error tracked: b15644b9-2dbd-4d33-b072-a5e42f24a585 - Exception: Performance test error 791
+Error tracked: 1f35aba8-8e47-49db-b116-0645f152bcc1 - Exception: Performance test error 792
+Error tracked: 86e3ad5f-d450-4b1e-807a-dcb43bc540c6 - Exception: Performance test error 793
+Error tracked: 581400a7-9e41-4744-9e00-5404d3da32d0 - Exception: Performance test error 794
+Error tracked: 708f88db-0a93-4a4c-a153-e75d93270cce - Exception: Performance test error 795
+Error tracked: 2425ff1e-51c8-43b3-a9bf-e45f236d619c - Exception: Performance test error 796
+Error tracked: 0cb805c0-ae60-4d3d-b650-8443f8b07dda - Exception: Performance test error 797
+Error tracked: 4f5fbc2a-4265-4a35-9fff-d685b5f68d6b - Exception: Performance test error 798
+Error tracked: 3a20ee60-dd80-4f9d-b992-3083e13a8e38 - Exception: Performance test error 799
+Error tracked: 754e5e4d-54bc-46d2-8f8a-3681eeb26ba2 - Exception: Performance test error 800
+Error tracked: 6b0f028e-faf2-463c-ab39-82d01d4cbe12 - Exception: Performance test error 801
+Error tracked: fec4c0e9-69f5-43df-b050-8b8078b74b89 - Exception: Performance test error 802
+Error tracked: d4da474c-b952-4549-9765-38be2e25e4c9 - Exception: Performance test error 803
+Error tracked: 8182672a-01c9-4ccb-82d3-961e78c89e5b - Exception: Performance test error 804
+Error tracked: c07b9a2c-5d2c-4c0e-9fb0-3062027841b6 - Exception: Performance test error 805
+Error tracked: 7bb326f7-759b-406f-88c4-163946eb19a6 - Exception: Performance test error 806
+Error tracked: 86ea2be1-6d3a-4e1a-8959-1c55f709df0f - Exception: Performance test error 807
+Error tracked: 091b0c42-a226-460f-b13d-f33feb18abfe - Exception: Performance test error 808
+Error tracked: dc1df107-deb1-49a2-ad2e-60cfedc11616 - Exception: Performance test error 809
+Error tracked: eb33aa2e-c306-4d9e-949d-54a4db23cf16 - Exception: Performance test error 810
+Error tracked: 0f1604d2-9e85-4738-8058-c4a5d4c7377e - Exception: Performance test error 811
+Error tracked: bf604a1a-f816-4f0b-9007-758591fb0325 - Exception: Performance test error 812
+Error tracked: 470a4339-b4dd-4822-80da-46fd69086bed - Exception: Performance test error 813
+Error tracked: ff137cfa-d8ab-4d75-8c94-8c15a38e4577 - Exception: Performance test error 814
+Error tracked: 3f9ee192-721b-4a84-beee-406cead67cfb - Exception: Performance test error 815
+Error tracked: a049e926-bb10-480d-a3ef-219c28f12a5d - Exception: Performance test error 816
+Error tracked: 80701ba9-1e44-4385-9e81-ca3d9c175d2f - Exception: Performance test error 817
+Error tracked: a503b6cb-c603-4dd4-af16-f866c801d725 - Exception: Performance test error 818
+Error tracked: 98355da4-2659-43c8-a9ea-baaf165b04c1 - Exception: Performance test error 819
+Error tracked: fb0c9b08-3a30-4d90-be73-b2497ef52e5c - Exception: Performance test error 820
+Error tracked: 0b1fc09b-99cb-4f19-a750-ae2e8ff5a466 - Exception: Performance test error 821
+Error tracked: 7a1a6b45-b44b-48fd-a323-9d56354b74df - Exception: Performance test error 822
+Error tracked: 2e8e0bd0-02f1-4dc7-9e08-43ec177b79d8 - Exception: Performance test error 823
+Error tracked: fe778820-b1b5-46e0-87d0-e8834c18c453 - Exception: Performance test error 824
+Error tracked: d755ba59-14ad-4e5a-bab2-623d5a4cb1fa - Exception: Performance test error 825
+Error tracked: 70943d49-3acd-49d9-8256-80f779fcb310 - Exception: Performance test error 826
+Error tracked: 24e4069d-143b-4402-baa5-86025128b802 - Exception: Performance test error 827
+Error tracked: 55a807c8-1fcb-4379-aeb4-0fcab90fa832 - Exception: Performance test error 828
+Error tracked: 90e2786a-91ab-4d8b-bf33-1d54795df49a - Exception: Performance test error 829
+Error tracked: e20b4e81-785f-460d-9848-934ff730ba52 - Exception: Performance test error 830
+Error tracked: c4a9dc01-65c8-43f3-b6b4-fca3db134afc - Exception: Performance test error 831
+Error tracked: 65487218-390f-429d-b016-96f991930317 - Exception: Performance test error 832
+Error tracked: ecf67c7d-6bf6-44de-8b57-114cd4982a32 - Exception: Performance test error 833
+Error tracked: b7577259-f31f-4001-aa92-fb96b207a2b2 - Exception: Performance test error 834
+Error tracked: 2ad1070e-aae5-4861-a448-650b320fd321 - Exception: Performance test error 835
+Error tracked: a5c16610-6bcb-4a7a-a6de-0aa31891b504 - Exception: Performance test error 836
+Error tracked: 81b5882a-4dc0-4a7f-b706-70d1ecc9e25b - Exception: Performance test error 837
+Error tracked: b302b431-156c-42b1-9b11-126c9d42ce56 - Exception: Performance test error 838
+Error tracked: 6d9cf620-4dea-4fde-b0f9-e82d7cfd4d5c - Exception: Performance test error 839
+Error tracked: 7077c4bf-eb0f-4e43-a9c3-2493279adf95 - Exception: Performance test error 840
+Error tracked: 661246cc-3a95-4de2-95a0-9cec7510120e - Exception: Performance test error 841
+Error tracked: 71af66c4-656c-4886-bb25-0d0c19acf5e6 - Exception: Performance test error 842
+Error tracked: bb35fd0e-a5a1-47b5-8751-d33ef244fec9 - Exception: Performance test error 843
+Error tracked: 96788035-393a-457b-86ed-024f824b5bbb - Exception: Performance test error 844
+Error tracked: de0ba9d1-081e-4a3a-b95d-63d48c7b57c6 - Exception: Performance test error 845
+Error tracked: 6b62e348-724d-4774-b39e-70c61bbf6ec2 - Exception: Performance test error 846
+Error tracked: 383428bc-7af6-41c8-86a0-3802cb2dbc99 - Exception: Performance test error 847
+Error tracked: 8e2c15e5-b670-4833-be34-89d27c6b7243 - Exception: Performance test error 848
+Error tracked: 0dc94983-4bef-4316-8581-a89c3624fca2 - Exception: Performance test error 849
+Error tracked: 495501de-51ac-4716-ae33-4367234462f7 - Exception: Performance test error 850
+Error tracked: 315d6f06-8634-407e-a0b7-da791ccb0f80 - Exception: Performance test error 851
+Error tracked: 847cf546-263e-47f9-bf53-e9969d1c13b8 - Exception: Performance test error 852
+Error tracked: dba2226e-d05f-4748-ba83-88cf67114265 - Exception: Performance test error 853
+Error tracked: ec3243ff-f4cc-41f9-8866-bccac3c6dc18 - Exception: Performance test error 854
+Error tracked: 4eb2d8a6-9578-4fe0-abd7-2f455f15aa76 - Exception: Performance test error 855
+Error tracked: 9152e62f-d18f-46de-ad6d-88151d2fec81 - Exception: Performance test error 856
+Error tracked: b57c5431-dad6-4391-80f5-f864cead492d - Exception: Performance test error 857
+Error tracked: f0132454-0f55-4466-b7e6-e44ebf750439 - Exception: Performance test error 858
+Error tracked: f0ccc704-c039-4507-bb72-94470d3723e8 - Exception: Performance test error 859
+Error tracked: 525fc2d6-e3e9-467f-8188-8c2b966339c5 - Exception: Performance test error 860
+Error tracked: f55faf6f-a66d-4db3-8c86-5d1e800c12bf - Exception: Performance test error 861
+Error tracked: 9a69a4e4-a159-470e-9b38-c86b55f6aec2 - Exception: Performance test error 862
+Error tracked: e50514bd-8700-44bc-9b88-a9850b3d164a - Exception: Performance test error 863
+Error tracked: b509b777-449c-4409-bba3-56bada5c35d3 - Exception: Performance test error 864
+Error tracked: d2853bf4-21d0-4ff3-8d40-1eafefc616e7 - Exception: Performance test error 865
+Error tracked: 4fcf8431-5331-41f3-a807-09de068e63fb - Exception: Performance test error 866
+Error tracked: 0b0c40bd-04a7-4bef-bfb8-6bbd5912ad4f - Exception: Performance test error 867
+Error tracked: 6a038178-fd19-4efc-b532-40a1f5903b10 - Exception: Performance test error 868
+Error tracked: df72c507-bc35-42d4-a158-c3e515bf0b72 - Exception: Performance test error 869
+Error tracked: 77b64fa3-d78a-4374-aa11-67d6c6a6b77a - Exception: Performance test error 870
+Error tracked: 948cc917-57ed-4f08-86e3-6620b0bd844b - Exception: Performance test error 871
+Error tracked: 6ee86e56-4726-48ac-b675-eeef9c0815de - Exception: Performance test error 872
+Error tracked: b59847ce-228b-4bb4-8650-6699678131c8 - Exception: Performance test error 873
+Error tracked: 6413e0b3-aa74-446c-9ddd-97f07e98856e - Exception: Performance test error 874
+Error tracked: dcf040c8-f9ec-4b22-9b8e-4a104ee9d943 - Exception: Performance test error 875
+Error tracked: 9369cf20-01c3-4f0f-930d-5f764be1c823 - Exception: Performance test error 876
+Error tracked: 83a88244-add7-435e-ad50-3ed128d1a0f9 - Exception: Performance test error 877
+Error tracked: 3ad986d5-f457-4cf8-b47c-c8329c4f71c8 - Exception: Performance test error 878
+Error tracked: 49663a82-f359-4347-99c7-696077de0223 - Exception: Performance test error 879
+Error tracked: 27a6637f-0606-41dc-a1fd-352f473c9469 - Exception: Performance test error 880
+Error tracked: 8b21509f-68f3-48ca-b4cd-35c0126ccef1 - Exception: Performance test error 881
+Error tracked: 73f52777-995b-4f83-9718-87dd0080a68e - Exception: Performance test error 882
+Error tracked: 9c41911d-b904-4222-8964-ab2873f55cfc - Exception: Performance test error 883
+Error tracked: b08d2225-90f5-419e-bd0e-709f772b8b9c - Exception: Performance test error 884
+Error tracked: 595c1f9a-8999-477c-a00a-9212a0eb9f2f - Exception: Performance test error 885
+Error tracked: 27efbfe7-95ab-4aa4-b109-5923ae9e9496 - Exception: Performance test error 886
+Error tracked: aa16c62a-815d-431d-9347-407c0e5bb04d - Exception: Performance test error 887
+Error tracked: 3488e0e1-6120-457c-aeb7-8549dd011a87 - Exception: Performance test error 888
+Error tracked: 35e9d0ad-8917-4a71-b23c-e403dd66aa91 - Exception: Performance test error 889
+Error tracked: 48e4bbd1-57b9-468c-8f42-a9df5dea4027 - Exception: Performance test error 890
+Error tracked: a6efe88e-489d-45d1-84fe-39c8bd5ca9f8 - Exception: Performance test error 891
+Error tracked: 1ea7bc95-e361-4099-964f-57c76155d8e6 - Exception: Performance test error 892
+Error tracked: fdec7f70-b4df-47fc-ac9c-7f1dc65806f8 - Exception: Performance test error 893
+Error tracked: c980995b-463e-4f11-8c21-7089df295560 - Exception: Performance test error 894
+Error tracked: 18db06d7-1c04-40de-9ce2-0fe27ace6bd0 - Exception: Performance test error 895
+Error tracked: 67e0a633-f144-4bf8-aa4c-7dbcbdf6a77e - Exception: Performance test error 896
+Error tracked: 4ea2bf85-d616-4948-b2ab-7751238798c9 - Exception: Performance test error 897
+Error tracked: 29083f52-569e-4ce4-a486-26e4622e181b - Exception: Performance test error 898
+Error tracked: 28629059-eefa-4841-b380-568690caa366 - Exception: Performance test error 899
+Error tracked: 67252889-6ca5-4dc1-bbef-e2349c1e2a2a - Exception: Performance test error 900
+Error tracked: 55deb9bb-2c10-4dc0-a461-fb9d782f3a25 - Exception: Performance test error 901
+Error tracked: 3966aec6-8d54-4fcf-9e30-b5990b705167 - Exception: Performance test error 902
+Error tracked: f0b96976-c011-4375-8f0f-bbedc54ed0e1 - Exception: Performance test error 903
+Error tracked: 87bfdfc6-6b0f-4e8d-963e-a7c7eaa5c6bd - Exception: Performance test error 904
+Error tracked: 5458ec77-177c-43ac-b028-ea3f9e4dca6e - Exception: Performance test error 905
+Error tracked: b9623381-f587-445b-9c2b-e4821491c148 - Exception: Performance test error 906
+Error tracked: 1738a412-6f29-4793-b4be-9ef31aa4063d - Exception: Performance test error 907
+Error tracked: 07693c69-5dcf-4ff7-8533-fcc20305b20e - Exception: Performance test error 908
+Error tracked: 63ccd714-4760-4d71-a2f8-4dab2b2bd2e8 - Exception: Performance test error 909
+Error tracked: 29e2ee59-09ae-46f5-89d9-229fc452acb5 - Exception: Performance test error 910
+Error tracked: 7ee0132d-3c94-4054-bb4d-2e2f58aa39ed - Exception: Performance test error 911
+Error tracked: 23e26ea3-3aae-4079-a19a-812524cccf9c - Exception: Performance test error 912
+Error tracked: 49c40727-42e5-442d-a47e-6dc68ceefe62 - Exception: Performance test error 913
+Error tracked: f9cb2770-6852-4b31-9be3-3bff925669b5 - Exception: Performance test error 914
+Error tracked: 3e73db09-856f-4246-b371-fd98c3dc31f8 - Exception: Performance test error 915
+Error tracked: 64cb6e1c-24f9-4e68-976a-5ee0755deea7 - Exception: Performance test error 916
+Error tracked: 9d7915ed-ac5e-45c7-b07d-7dcfa64854a7 - Exception: Performance test error 917
+Error tracked: 0f856ea7-2637-439b-858b-8bb4317c76b0 - Exception: Performance test error 918
+Error tracked: ca559563-db49-49ac-86a1-5b35dbaa5f84 - Exception: Performance test error 919
+Error tracked: efaa35a0-7ad5-4fbc-acbd-640d70bfdcbb - Exception: Performance test error 920
+Error tracked: 89a06982-d791-4622-97e3-6bb85cecdb94 - Exception: Performance test error 921
+Error tracked: 1bf4f465-e7b7-4ce7-a6ba-3a29eb301469 - Exception: Performance test error 922
+Error tracked: adb04ab6-9c4e-42fd-a2df-2d31b58922a4 - Exception: Performance test error 923
+Error tracked: d0a67873-e93b-47fb-b0e4-f20e051640cc - Exception: Performance test error 924
+Error tracked: 42b6923e-229a-4c0e-b688-fe6a84f53919 - Exception: Performance test error 925
+Error tracked: 2a400783-7765-4903-9b7d-4530108391a8 - Exception: Performance test error 926
+Error tracked: feb81e19-3fa3-406f-8626-9e98235b73ad - Exception: Performance test error 927
+Error tracked: b103f0d8-2f03-4aed-80a7-b1af708361e9 - Exception: Performance test error 928
+Error tracked: 220cc165-5b44-4cd3-84de-fbb783dfc552 - Exception: Performance test error 929
+Error tracked: 9b724732-c521-4b32-9467-5be3d0a831bd - Exception: Performance test error 930
+Error tracked: e8fe76df-7bc4-49ab-bbf9-579310d76773 - Exception: Performance test error 931
+Error tracked: 545822f2-f831-45aa-aef7-a4700e973fcd - Exception: Performance test error 932
+Error tracked: 50198f4f-743d-4c54-8c56-aea476d22ecb - Exception: Performance test error 933
+Error tracked: 574a4d76-67b3-4957-aa5a-1bfd907ce4cd - Exception: Performance test error 934
+Error tracked: 76970329-81cf-4ded-b538-0684fa39044b - Exception: Performance test error 935
+Error tracked: 7f9e4009-832c-4d82-896f-260242197612 - Exception: Performance test error 936
+Error tracked: 1eee8d87-513b-4e1d-aac5-e895aada158c - Exception: Performance test error 937
+Error tracked: a5d5a8f9-5ece-4b84-8ddf-6dc2ffb704cb - Exception: Performance test error 938
+Error tracked: b3340d7f-48a3-43f4-aef3-a42fd9839c1a - Exception: Performance test error 939
+Error tracked: 31504101-2af7-4301-96c4-d2d99cc15658 - Exception: Performance test error 940
+Error tracked: 4bc9246b-d177-4f82-a65c-2c7326822fd3 - Exception: Performance test error 941
+Error storing error record: 'DataStorage' object has no attribute 'store_error_record'
+Error tracked: 304c5af4-a484-4e73-9a5d-36ffc92eccd8 - Exception: Performance test error 942
+Error tracked: 00f769d0-668e-45a4-9cd5-15a2069a20d2 - Exception: Performance test error 943
+Error tracked: aec56ccf-bf47-424a-9a88-ee305f9a4384 - Exception: Performance test error 944
+Error tracked: c0747d32-3108-4728-9465-25c61abc3506 - Exception: Performance test error 945
+Error tracked: 3a74fc57-1cfa-492a-8bcf-24055d98fb99 - Exception: Performance test error 946
+Error tracked: 7e4b639b-0ac6-4486-bbf8-dfc663a1cca8 - Exception: Performance test error 947
+Error tracked: 5510cb39-234d-4b7d-a9c1-cbfb237bb0ee - Exception: Performance test error 948
+Error tracked: 2f7c537e-b8f9-4df1-9736-6c7397e2fec5 - Exception: Performance test error 949
+Error tracked: 4e773637-e891-4cbb-b01e-b212e5dd422d - Exception: Performance test error 950
+Error tracked: 66661b4c-044e-48fb-8c2f-1bd924060679 - Exception: Performance test error 951
+Error tracked: ef772653-d8cf-437f-a81f-5f3581dcb61b - Exception: Performance test error 952
+Error tracked: c8bef9b9-0762-4306-aa82-c2043b09bd79 - Exception: Performance test error 953
+Error tracked: b24e4976-940a-4ca5-97f5-da658e4dcb68 - Exception: Performance test error 954
+Error tracked: ccd444a4-7bc2-41b2-995e-ac782e404f90 - Exception: Performance test error 955
+Error tracked: bbf65542-3611-47cc-bd89-a100a398b019 - Exception: Performance test error 956
+Error tracked: 79f824df-9363-44f6-87f3-eee32a7005f0 - Exception: Performance test error 957
+Error tracked: 60888ac9-e86e-4b3d-9aab-71d296fea3cc - Exception: Performance test error 958
+Error tracked: d17fada2-e6b9-4fda-96d1-68afe3894236 - Exception: Performance test error 959
+Error tracked: 338cf86d-d9cc-40ad-b26b-2531854c9883 - Exception: Performance test error 960
+Error tracked: 0eed7201-c6d8-40ae-811f-060e27ec2921 - Exception: Performance test error 961
+Error tracked: 3c113713-74fc-4f2c-966a-18c4b1620cf5 - Exception: Performance test error 962
+Error tracked: 29474de2-8cb6-492a-b03f-6c2b31124f3e - Exception: Performance test error 963
+Error tracked: 96ca7c13-6dc4-4ef4-867a-d601e7215902 - Exception: Performance test error 964
+Error tracked: f4fbfab7-333a-428c-9479-21fde199b581 - Exception: Performance test error 965
+Error tracked: 321fbc0d-bbc9-448a-a1e4-956b80d8bb19 - Exception: Performance test error 966
+Error tracked: 3358c756-79a8-4a9d-b96e-7fcdc9407d19 - Exception: Performance test error 967
+Error tracked: 78ab0b6a-19e3-4861-8f13-4b2a6684f1e6 - Exception: Performance test error 968
+Error tracked: 4aacfd10-b3d2-4350-beee-be9d443a87f2 - Exception: Performance test error 969
+Error tracked: 78e3ac01-f468-42a6-865c-0aaa9930680a - Exception: Performance test error 970
+Error tracked: 6ab7d250-0bb4-425e-93f3-d105179e39a0 - Exception: Performance test error 971
+Error tracked: 920063b6-f483-4f29-9e30-f451c6bc7ed2 - Exception: Performance test error 972
+Error tracked: 26c96527-f422-4f8d-af29-ca382ab54f97 - Exception: Performance test error 973
+Error tracked: 18b50c82-ae27-4d21-8403-134bb5b59e1c - Exception: Performance test error 974
+Error tracked: 5c15956d-247d-400d-8cd6-307bff211561 - Exception: Performance test error 975
+Error tracked: e1a8f359-a255-4303-91d3-2e69aa0ef89c - Exception: Performance test error 976
+Error tracked: b39efbc5-1ce4-400c-9265-b2ee6c9e851e - Exception: Performance test error 977
+Error tracked: ae569916-eda0-42c7-953a-2282e4507230 - Exception: Performance test error 978
+Error tracked: d38ba955-52d2-4fff-8408-2d8cf94a9c42 - Exception: Performance test error 979
+Error tracked: 15533c2b-9026-4c98-9cbf-a0fd6e541791 - Exception: Performance test error 980
+Error tracked: 36f53a48-8d24-44b7-a89b-cb9ca81e71eb - Exception: Performance test error 981
+Error tracked: a3c4a154-38d2-414e-a407-983eb334b86a - Exception: Performance test error 982
+Error tracked: dceec5e5-b9b4-4887-95c4-e96457eb00c5 - Exception: Performance test error 983
+Error tracked: 9c764e23-e0db-48f3-9ec3-914ee64e3957 - Exception: Performance test error 984
+Error tracked: a23f8239-af9e-41f0-ae7f-91e19e002d34 - Exception: Performance test error 985
+Error tracked: 6bf3b5d7-903c-45c5-b12b-8dc252dffaf3 - Exception: Performance test error 986
+Error tracked: ba33832b-b9fb-4a26-93b8-6a92cc0dc3f3 - Exception: Performance test error 987
+Error tracked: 3a94349d-c949-409b-a280-af8225419ccd - Exception: Performance test error 988
+Error tracked: b61a41c4-c499-41b3-9e4e-dae130cbf935 - Exception: Performance test error 989
+Error tracked: 3290cc35-1120-42a2-b3ff-065edd3faf4e - Exception: Performance test error 990
+Error tracked: d76eb129-7f9f-4a36-b7a7-d6d640cab887 - Exception: Performance test error 991
+Error tracked: 5998ee97-03dd-45dc-a5ea-c4a8888a3c83 - Exception: Performance test error 992
+Error tracked: 3885879a-1687-4050-852d-07cd9a72965e - Exception: Performance test error 993
+Error tracked: 25a2d692-b1b2-477e-b699-81b13247a32a - Exception: Performance test error 994
+Error tracked: 2bf656d5-5c79-4720-86b2-7a985e18fff2 - Exception: Performance test error 995
+Error tracked: 3cf7c1e3-263c-4d3a-b579-4cf7bbdc16ce - Exception: Performance test error 996
+Error tracked: c65f2b27-a6ea-462b-8767-6722c5ef8834 - Exception: Performance test error 997
+Error tracked: 447a9e4e-3e6d-4c7d-a8f0-7c348e62793a - Exception: Performance test error 998
+Error tracked: 118cbc55-956f-47cf-a854-c0909c017fca - Exception: Performance test error 999
+ok
+test_logging_performance (__main__.TestPerformance)
+Test logging performance ... Error setting up loggers: 'LogHandler' object has no attribute 'setLevel'
+Error recording metric cpu_usage_percent: 'NoneType' object is not a mapping
+Error recording metric memory_usage_percent: 'NoneType' object is not a mapping
+Error recording metric disk_usage_percent: 'NoneType' object is not a mapping
+Error recording metric network_bytes_sent: 'NoneType' object is not a mapping
+Error recording metric network_bytes_recv: 'NoneType' object is not a mapping
+Error recording metric cpu_usage_percent: 'NoneType' object is not a mapping
+Error recording metric memory_usage_percent: 'NoneType' object is not a mapping
+Error recording metric disk_usage_percent: 'NoneType' object is not a mapping
+Error recording metric network_bytes_sent: 'NoneType' object is not a mapping
+Error recording metric network_bytes_recv: 'NoneType' object is not a mapping
+ok
+test_concurrent_operations (__main__.TestEdgeCases)
+Test concurrent operations ... skipped 'Module not available'
+test_invalid_config (__main__.TestEdgeCases)
+Test system behavior with invalid configuration ... ok
+test_missing_dependencies (__main__.TestEdgeCases)
+Test behavior when dependencies are missing ... ok
+
+----------------------------------------------------------------------
+Ran 54 tests in 12.984s
+
+OK (skipped=12)
+
+================================================================================
+Tests run: 54
+Failures: 0
+Errors: 0
+Success rate: 100.0%
+
+Test suite completed!

@@ -1,0 +1,71 @@
+# Real-time LSTM Prediction System Requirements
+
+# Core dependencies
+numpy>=1.21.0
+pandas>=1.3.0
+scikit-learn>=1.0.0
+tensorflow>=2.8.0
+
+# Data fetching
+requests>=2.25.0
+urllib3>=1.26.0
+yfinance>=0.2.18
+
+# Scheduling
+schedule>=1.1.0
+
+# Database
+# sqlite3 is built-in with Python
+
+# Logging and utilities
+python-dotenv>=0.19.0
+tqdm>=4.62.0
+psutil>=5.8.0
+
+# Enhanced API and Webhook dependencies
+flask>=2.0.0
+flask-cors>=3.0.0
+websockets>=11.0.0
+
+# Performance profiling and monitoring
+# cProfile is built-in with Python
+memory-profiler>=0.60.0
+# py-spy>=0.3.14  # Optional system profiler
+
+# Logging and error tracking enhancements
+structlog>=23.1.0
+sentry-sdk>=1.32.0
+colorama>=0.4.6
+
+# Data visualization
+plotly>=5.15.0
+dash>=2.14.0
+bokeh>=3.2.0
+
+# Authentication and security
+pyjwt>=2.8.0
+bcrypt>=4.0.1
+cryptography>=41.0.0
+
+# Database enhancements
+sqlalchemy>=2.0.0
+alembic>=1.11.0
+redis>=4.6.0
+
+# Async support
+aiohttp>=3.8.0
+# uvloop>=0.17.0  # Optional for performance
+
+# Optional: For enhanced data analysis
+matplotlib>=3.5.0
+seaborn>=0.11.0
+
+# Optional: For API rate limiting
+# ratelimit>=2.2.0  # May have compatibility issues
+
+# Optional: For configuration management
+pyyaml>=6.0
+
+# Testing
+pytest>=7.0.0
+pytest-mock>=3.10.0

@@ -1,0 +1,317 @@
+"""
+Polygon.io Data Fetcher for Real-time LSTM Prediction System
+Phase 1.2.1: Polygon.io Integration with Rate Limiting & Error Handling
+"""
+
+import time
+import logging
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+from typing import Optional, Dict, Any, List
+import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+import os
+
+logger = logging.getLogger(__name__)
+
+class PolygonDataFetcher:
+    """
+    Enhanced Polygon.io data fetcher with rate limiting, error handling, and caching
+    """
+    
+    def __init__(self, api_key: str = None, rate_limit: int = 100):
+        """
+        Initialize the Polygon.io data fetcher
+        
+        Args:
+            api_key: Polygon.io API key. If None, will try to get from environment variable
+            rate_limit: Maximum API calls per minute (default: 100)
+        """
+        if api_key is None:
+            api_key = os.getenv('POLYGON_API_KEY')
+            if api_key is None:
+                raise ValueError("Polygon.io API key is required. Set POLYGON_API_KEY environment variable or pass api_key parameter.")
+        
+        self.api_key = api_key
+        self.rate_limit = rate_limit
+        self.base_url = "https://api.polygon.io"
+        self.last_request_time = 0
+        self.request_count = 0
+        self.request_window_start = time.time()
+        
+        # Setup session with retry strategy
+        self.session = requests.Session()
+        retry_strategy = Retry(
+            total=3,
+            backoff_factor=1,
+            status_forcelist=[429, 500, 502, 503, 504],
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        self.session.mount("http://", adapter)
+        self.session.mount("https://", adapter)
+        
+        logger.info(f"PolygonDataFetcher initialized with rate limit: {rate_limit} calls/minute")
+    
+    def _rate_limit_check(self):
+        """Check and enforce rate limiting"""
+        current_time = time.time()
+        
+        # Reset counter every minute
+        if current_time - self.request_window_start >= 60:
+            self.request_count = 0
+            self.request_window_start = current_time
+        
+        # Check if we've hit the rate limit
+        if self.request_count >= self.rate_limit:
+            sleep_time = 60 - (current_time - self.request_window_start)
+            if sleep_time > 0:
+                logger.warning(f"Rate limit reached. Sleeping for {sleep_time:.2f} seconds")
+                time.sleep(sleep_time)
+                self.request_count = 0
+                self.request_window_start = time.time()
+        
+        # Ensure minimum time between requests
+        time_since_last = current_time - self.last_request_time
+        if time_since_last < 0.6:  # 600ms between requests
+            time.sleep(0.6 - time_since_last)
+        
+        self.request_count += 1
+        self.last_request_time = time.time()
+    
+    def _make_request(self, endpoint: str, params: Dict[str, Any] = None) -> Dict[str, Any]:
+        """
+        Make a rate-limited request to Polygon.io API
+        
+        Args:
+            endpoint: API endpoint
+            params: Query parameters
+            
+        Returns:
+            API response as dictionary
+        """
+        self._rate_limit_check()
+        
+        if params is None:
+            params = {}
+        
+        params['apikey'] = self.api_key
+        url = f"{self.base_url}{endpoint}"
+        
+        try:
+            response = self.session.get(url, params=params, timeout=30)
+            response.raise_for_status()
+            
+            data = response.json()
+            
+            if data.get('status') == 'OK':
+                return data
+            else:
+                error_msg = data.get('message', 'Unknown API error')
+                logger.error(f"Polygon API error: {error_msg}")
+                raise Exception(f"Polygon API error: {error_msg}")
+                
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Request failed: {e}")
+            raise
+        except Exception as e:
+            logger.error(f"Unexpected error: {e}")
+            raise
+    
+    def fetch_15min_data(self, symbol: str, start_time: datetime, end_time: datetime) -> pd.DataFrame:
+        """
+        Fetch 15-minute bar data from Polygon.io
+        
+        Args:
+            symbol: Stock ticker symbol
+            start_time: Start datetime
+            end_time: End datetime
+            
+        Returns:
+            DataFrame with OHLCV data
+        """
+        try:
+            logger.info(f"Fetching 15-minute data for {symbol} from {start_time} to {end_time}")
+            
+            # Format dates for API
+            start_str = start_time.strftime('%Y-%m-%d')
+            end_str = end_time.strftime('%Y-%m-%d')
+            
+            endpoint = f"/v2/aggs/ticker/{symbol}/range/15/minute/{start_str}/{end_str}"
+            params = {
+                'adjusted': 'true',
+                'sort': 'asc',
+                'limit': 50000
+            }
+            
+            data = self._make_request(endpoint, params)
+            
+            if not data.get('results'):
+                logger.warning(f"No 15-minute data found for {symbol}")
+                return pd.DataFrame()
+            
+            # Convert to DataFrame
+            bars = []
+            for bar in data['results']:
+                bars.append({
+                    'timestamp': pd.to_datetime(bar['t'], unit='ms'),
+                    'open': bar['o'],
+                    'high': bar['h'],
+                    'low': bar['l'],
+                    'close': bar['c'],
+                    'volume': bar['v']
+                })
+            
+            df = pd.DataFrame(bars)
+            df.set_index('timestamp', inplace=True)
+            df.sort_index(inplace=True)
+            
+            logger.info(f"Retrieved {len(df)} 15-minute bars for {symbol}")
+            return df
+            
+        except Exception as e:
+            logger.error(f"Error fetching 15-minute data for {symbol}: {e}")
+            raise
+    
+    def fetch_latest_data(self, symbol: str, lookback_hours: int = 24) -> pd.DataFrame:
+        """
+        Fetch latest data for a symbol
+        
+        Args:
+            symbol: Stock ticker symbol
+            lookback_hours: Hours to look back (default: 24)
+            
+        Returns:
+            DataFrame with latest OHLCV data
+        """
+        try:
+            end_time = datetime.now()
+            start_time = end_time - timedelta(hours=lookback_hours)
+            
+            return self.fetch_15min_data(symbol, start_time, end_time)
+            
+        except Exception as e:
+            logger.error(f"Error fetching latest data for {symbol}: {e}")
+            raise
+    
+    def get_current_price(self, symbol: str) -> Optional[float]:
+        """
+        Get the current stock price
+        
+        Args:
+            symbol: Stock ticker symbol
+            
+        Returns:
+            Current price or None if not available
+        """
+        try:
+            # Try to get latest trade
+            endpoint = f"/v2/last/trade/{symbol}"
+            data = self._make_request(endpoint)
+            
+            if data.get('results'):
+                return float(data['results']['p'])
+            
+            # Fallback: get latest close from 15-minute data
+            latest_data = self.fetch_latest_data(symbol, lookback_hours=1)
+            if not latest_data.empty:
+                return float(latest_data['close'].iloc[-1])
+            
+            return None
+            
+        except Exception as e:
+            logger.error(f"Error getting current price for {symbol}: {e}")
+            return None
+    
+    def get_market_status(self) -> Dict[str, Any]:
+        """
+        Get current market status
+        
+        Returns:
+            Dictionary with market status information
+        """
+        try:
+            endpoint = "/v1/marketstatus/now"
+            data = self._make_request(endpoint)
+            
+            return {
+                'market': data.get('market', 'unknown'),
+                'serverTime': data.get('serverTime'),
+                'exchanges': data.get('exchanges', {}),
+                'currencies': data.get('currencies', {})
+            }
+            
+        except Exception as e:
+            logger.error(f"Error getting market status: {e}")
+            return {}
+    
+    def validate_symbol(self, symbol: str) -> bool:
+        """
+        Validate if a symbol exists and is tradeable
+        
+        Args:
+            symbol: Stock ticker symbol
+            
+        Returns:
+            True if symbol is valid, False otherwise
+        """
+        try:
+            endpoint = f"/v3/reference/tickers/{symbol}"
+            data = self._make_request(endpoint)
+            
+            if data.get('results'):
+                ticker_info = data['results']
+                return ticker_info.get('active', False) and ticker_info.get('type') == 'CS'
+            
+            return False
+            
+        except Exception as e:
+            logger.error(f"Error validating symbol {symbol}: {e}")
+            return False
+    
+    def get_symbol_info(self, symbol: str) -> Dict[str, Any]:
+        """
+        Get detailed information about a symbol
+        
+        Args:
+            symbol: Stock ticker symbol
+            
+        Returns:
+            Dictionary with symbol information
+        """
+        try:
+            endpoint = f"/v3/reference/tickers/{symbol}"
+            data = self._make_request(endpoint)
+            
+            if data.get('results'):
+                return data['results']
+            
+            return {}
+            
+        except Exception as e:
+            logger.error(f"Error getting symbol info for {symbol}: {e}")
+            return {}
+
+
+# Example usage and testing
+if __name__ == "__main__":
+    # Setup logging
+    logging.basicConfig(level=logging.INFO)
+    
+    # Test the fetcher
+    fetcher = PolygonDataFetcher()
+    
+    # Test symbol validation
+    test_symbols = ['AAPL', 'GOOGL', 'INVALID_SYMBOL']
+    for symbol in test_symbols:
+        is_valid = fetcher.validate_symbol(symbol)
+        print(f"{symbol}: {'Valid' if is_valid else 'Invalid'}")
+    
+    # Test data fetching
+    try:
+        data = fetcher.fetch_latest_data('AAPL', lookback_hours=2)
+        print(f"Latest AAPL data shape: {data.shape}")
+        print(f"Latest AAPL data:\n{data.tail()}")
+    except Exception as e:
+        print(f"Error fetching data: {e}")

@@ -1,0 +1,22 @@
+{
+  "backup_history": [
+    {
+      "backup_id": "backup_20250913_100359",
+      "backup_type": "full",
+      "status": "failed",
+      "start_time": "2025-09-13T10:03:59.693839",
+      "end_time": "2025-09-13T10:03:59.697420",
+      "size_bytes": 0,
+      "checksum": null,
+      "file_path": "backups/backup_20250913_100359.db.gz",
+      "metadata": {},
+      "error_message": "[Errno 2] No such file or directory: 'backups/backup_20250913_100359.db.gz'"
+    }
+  ],
+  "recovery_history": [],
+  "backup_stats": {
+    "total_backups": 1,
+    "successful_backups": 0,
+    "failed_backups": 1,
+    "total_size_bytes": 0,
+    "last_backup": 

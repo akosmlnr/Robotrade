@@ -1,0 +1,32 @@
+{
+  "export_history": [
+    {
+      "export_id": "export_20250913_095351",
+      "export_type": "predictions",
+      "export_format": "csv",
+      "symbols": [
+        "AAPL"
+      ],
+      "start_date": "2025-09-12T09:53:51.913357",
+      "end_date": "2025-09-13T09:53:51.913365",
+      "filters": {},
+      "output_path": "exports/export_20250913_095351_predictions.csv.zip",
+      "compression_enabled": true,
+      "email_enabled": false,
+      "email_recipients": [],
+      "status": "pending",
+      "created_at": "2025-09-13T09:53:51.913406",
+      "started_at": null,
+      "completed_at": null,
+      "file_size_bytes": 0,
+      "error_message": null
+    }
+  ],
+  "export_stats": {
+    "total_exports": 0,
+    "successful_exports": 0,
+    "failed_exports": 0,
+    "total_data_exported_mb": 0.0,
+    "last_export": null
+  }
+}
