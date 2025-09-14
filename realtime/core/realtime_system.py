@@ -48,7 +48,7 @@ class RealTimeSystem:
         self.is_running = False
         self.symbols = self.config.get('symbols', ['AAPL'])
         self.update_interval = self.config.get('update_interval', 15)  # minutes
-        self.min_profit_percent = self.config.get('min_profit_percent', 2.0)
+        self.max_recommendations_per_symbol = self.config.get('max_recommendations_per_symbol', 1)
         
         # Initialize components
         self.data_fetcher = PolygonDataFetcher(
@@ -83,14 +83,13 @@ class RealTimeSystem:
         return {
             'symbols': ['AAPL'],
             'update_interval': 15,  # minutes
-            'min_profit_percent': 2.0,
             'polygon_api_key': None,  # Will use environment variable
             'rate_limit': 100,
             'db_path': 'realtime_data.db',
             'models_dir': 'lstms',
             'validation_threshold': 0.02,  # 2% difference threshold for reprediction
             'confidence_threshold': 0.6,  # Minimum confidence for trade recommendations
-            'max_recommendations_per_symbol': 5,
+            'max_recommendations_per_symbol': 1,  # Select highest profiting recommendation
             # System component configuration
             'update_interval_minutes': 15,
             'validation_enabled': True,
@@ -253,9 +252,9 @@ class RealTimeSystem:
                 logger.warning(f"No model loaded for {symbol}")
                 return
             
-            # Fetch latest market data
-            logger.info(f"Fetching latest data for {symbol}")
-            latest_data = self.data_fetcher.fetch_latest_data(symbol, lookback_hours=24)
+            # Fetch comprehensive historical data (2 years) for better predictions
+            logger.info(f"Fetching comprehensive historical data for {symbol}")
+            latest_data = self.data_fetcher.fetch_2_years_historical_data(symbol)
             
             if latest_data.empty:
                 logger.warning(f"No market data available for {symbol}")
@@ -277,7 +276,7 @@ class RealTimeSystem:
                     symbol=symbol,
                     predictions_df=prediction_result['predictions'],
                     confidence_score=prediction_result['confidence_score'],
-                    min_profit_percent=self.min_profit_percent
+                    max_recommendations=self.max_recommendations_per_symbol  # Select highest profiting recommendation
                 )
                 
                 # Log results
@@ -428,7 +427,7 @@ if __name__ == "__main__":
     config = {
         'symbols': ['AAPL', 'GOOGL'],
         'update_interval': 15,  # minutes
-        'min_profit_percent': 2.0,
+        'max_recommendations_per_symbol': 1,  # Select highest profiting recommendation
         'polygon_api_key': None,  # Will use environment variable
         'db_path': 'realtime_data.db',
         'models_dir': 'models'

@@ -45,10 +45,9 @@ class Config:
             # System settings
             "symbols": ["AAPL"],
             "update_interval": 15,  # minutes
-            "min_profit_percent": 2.0,
             "validation_threshold": 0.02,  # 2% difference threshold for reprediction
             "confidence_threshold": 0.6,  # Minimum confidence for trade recommendations
-            "max_recommendations_per_symbol": 5,
+            "max_recommendations_per_symbol": 1,  # Select highest profiting recommendation
             
             # API settings
             "polygon_api_key": None,  # Will use environment variable POLYGON_API_KEY
@@ -180,7 +179,6 @@ class Config:
     def get_trading_config(self) -> Dict[str, Any]:
         """Get trading-specific configuration"""
         return {
-            'min_profit_percent': self.get('min_profit_percent'),
             'confidence_threshold': self.get('confidence_threshold'),
             'max_recommendations_per_symbol': self.get('max_recommendations_per_symbol'),
             'min_trade_duration_hours': self.get('min_trade_duration_hours'),

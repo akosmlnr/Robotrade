@@ -244,6 +244,72 @@ class PolygonDataFetcher:
             logger.error(f"Error fetching latest data for {symbol}: {e}")
             raise
     
+    def fetch_2_years_historical_data(self, symbol: str) -> pd.DataFrame:
+        """
+        Fetch 2 years of historical data for comprehensive model training/prediction
+        
+        Args:
+            symbol: Stock ticker symbol
+            
+        Returns:
+            DataFrame with 2 years of OHLCV data
+        """
+        try:
+            # Get current time and adjust for weekends
+            current_time = datetime.now()
+            
+            # If it's weekend, go back to last Friday
+            if current_time.weekday() >= 5:  # Saturday = 5, Sunday = 6
+                days_back = current_time.weekday() - 4  # Go back to Friday
+                current_time = current_time - timedelta(days=days_back)
+                current_time = current_time.replace(hour=16, minute=0, second=0, microsecond=0)  # 4 PM market close
+            
+            end_time = current_time
+            start_time = end_time - timedelta(days=730)  # 2 years = ~730 days
+            
+            # Ensure we don't go back to weekend
+            if start_time.weekday() >= 5:
+                # Go back to previous Friday
+                days_back = start_time.weekday() - 4
+                start_time = start_time - timedelta(days=days_back)
+                start_time = start_time.replace(hour=9, minute=30, second=0, microsecond=0)  # 9:30 AM market open
+            
+            logger.info(f"Fetching 2 years of historical data for {symbol}: {start_time} to {end_time}")
+            
+            # Fetch data in chunks to avoid API limits
+            all_data = []
+            chunk_start = start_time
+            chunk_days = 90  # 3 months per chunk
+            
+            while chunk_start < end_time:
+                chunk_end = min(chunk_start + timedelta(days=chunk_days), end_time)
+                
+                logger.info(f"Fetching chunk: {chunk_start} to {chunk_end}")
+                chunk_data = self.fetch_15min_data(symbol, chunk_start, chunk_end)
+                
+                if not chunk_data.empty:
+                    all_data.append(chunk_data)
+                
+                chunk_start = chunk_end + timedelta(minutes=15)  # Small overlap to avoid gaps
+                
+                # Rate limiting - wait between chunks
+                time.sleep(1)
+            
+            if not all_data:
+                logger.warning(f"No historical data found for {symbol}")
+                return pd.DataFrame()
+            
+            # Combine all chunks
+            combined_data = pd.concat(all_data, ignore_index=False)
+            combined_data = combined_data.sort_index().drop_duplicates()
+            
+            logger.info(f"Retrieved {len(combined_data)} total historical records for {symbol} over 2 years")
+            return combined_data
+            
+        except Exception as e:
+            logger.error(f"Error fetching 2 years historical data for {symbol}: {e}")
+            raise
+    
     def get_current_price(self, symbol: str) -> Optional[float]:
         """
         Get the current stock price

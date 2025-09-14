@@ -300,6 +300,38 @@ class DataStorage:
             logger.error(f"Error retrieving historical data for {symbol}: {e}")
             return pd.DataFrame()
     
+    def get_all_available_data(self, symbol: str) -> pd.DataFrame:
+        """
+        Get all available market data for a symbol
+        
+        Args:
+            symbol: Stock symbol
+            
+        Returns:
+            DataFrame with all available data
+        """
+        try:
+            # Ensure we have a valid connection
+            if not self.connection:
+                self._ensure_connection()
+            
+            query = """
+            SELECT timestamp, open, high, low, close, volume
+            FROM market_data 
+            WHERE symbol = ? 
+            ORDER BY timestamp ASC
+            """
+            
+            df = pd.read_sql_query(query, self.connection, params=(symbol,), parse_dates=['timestamp'])
+            df.set_index('timestamp', inplace=True)
+                
+            logger.info(f"Retrieved {len(df)} total records for {symbol} from database")
+            return df
+            
+        except Exception as e:
+            logger.error(f"Error retrieving all data for {symbol}: {e}")
+            return pd.DataFrame()
+    
     def get_latest_data(self, symbol: str, hours_back: int = 24) -> pd.DataFrame:
         """
         Get latest market data for a symbol
@@ -408,11 +440,11 @@ class DataStorage:
                 INSERT INTO trade_recommendations 
                 (symbol, recommendation_timestamp, entry_time, exit_time, 
                  entry_price, exit_price, expected_profit, expected_profit_percent, 
-                 confidence_score)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 confidence_score, status)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (symbol, datetime.now(), entry_time, exit_time, 
                   entry_price, exit_price, expected_profit, expected_profit_percent, 
-                  confidence_score))
+                  confidence_score, 'active'))
             
             recommendation_id = cursor.lastrowid
             self.connection.commit()
