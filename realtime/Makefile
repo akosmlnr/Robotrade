@@ -48,19 +48,19 @@ run-interactive: ## Run the container in interactive mode
 .PHONY: run-start
 run-start: ## Start the realtime system
 	@echo "$(GREEN)Starting realtime system...$(NC)"
-	docker run --rm -v "$(PWD)/data":/app/data -v "$(PWD)/logs":/app/logs \
+	docker run --rm -v "$(PWD)/data":/app/data -v "$(PWD)/logs":/app/logs --env-file .env \
 		$(DOCKER_IMAGE) $(PYTHON_CMD) -m core.cli start
 
 .PHONY: run-status
 run-status: ## Show system status
 	@echo "$(GREEN)Showing system status...$(NC)"
-	docker run --rm -v "$(PWD)/data":/app/data -v "$(PWD)/logs":/app/logs \
+	docker run --rm -v "$(PWD)/data":/app/data -v "$(PWD)/logs":/app/logs --env-file .env \
 		$(DOCKER_IMAGE) $(PYTHON_CMD) -m core.cli status
 
 .PHONY: run-api
 run-api: ## Start the API server
 	@echo "$(GREEN)Starting API server...$(NC)"
-	docker run --rm -p 5000:5000 -v "$(PWD)/data":/app/data -v "$(PWD)/logs":/app/logs \
+	docker run --rm -p 5000:5000 -v "$(PWD)/data":/app/data -v "$(PWD)/logs":/app/logs --env-file .env \
 		$(DOCKER_IMAGE) $(PYTHON_CMD) -m core.api_server
 
 ##@ Development
@@ -72,12 +72,74 @@ dev-setup: build ## Development setup: build image
 .PHONY: test
 test: ## Run tests
 	@echo "$(GREEN)Running tests...$(NC)"
-	docker run --rm -v "$(PWD)":/app $(DOCKER_IMAGE) $(PYTHON_CMD) tests/test_comprehensive.py
+	docker run --rm -v "$(PWD)":/app --env-file .env $(DOCKER_IMAGE) $(PYTHON_CMD) tests/test_comprehensive.py
 
 .PHONY: test-pytest
 test-pytest: ## Run tests with pytest
 	@echo "$(GREEN)Running tests with pytest...$(NC)"
-	docker run --rm -v "$(PWD)":/app $(DOCKER_IMAGE) $(PYTHON_CMD) -m pytest tests/
+	docker run --rm -v "$(PWD)":/app --env-file .env $(DOCKER_IMAGE) $(PYTHON_CMD) -m pytest tests/
+
+##@ Backtesting
+
+.PHONY: backtest-setup
+backtest-setup: ## Validate backtester setup and environment
+	@echo "$(GREEN)Validating backtester setup...$(NC)"
+	docker run --rm -v "$(PWD)":/app --env-file .env $(DOCKER_IMAGE) $(PYTHON_CMD) backtester/validate_setup.py
+
+.PHONY: backtest-single
+backtest-single: ## Run single symbol backtest (default: AAPL)
+	@echo "$(GREEN)Running single symbol backtest...$(NC)"
+	docker run --rm -v "$(PWD)":/app --env-file .env $(DOCKER_IMAGE) $(PYTHON_CMD) backtester/backtester.py --symbol AAPL
+
+.PHONY: backtest-multiple
+backtest-multiple: ## Run multiple symbol backtests (AAPL, GOOGL, MSFT)
+	@echo "$(GREEN)Running multiple symbol backtests...$(NC)"
+	docker run --rm -v "$(PWD)":/app --env-file .env $(DOCKER_IMAGE) $(PYTHON_CMD) backtester/backtester.py --symbols AAPL GOOGL MSFT --runs 3
+
+.PHONY: backtest-fast
+backtest-fast: ## Run fast backtest (2x speed)
+	@echo "$(GREEN)Running fast backtest...$(NC)"
+	docker run --rm -v "$(PWD)":/app --env-file .env $(DOCKER_IMAGE) $(PYTHON_CMD) backtester/backtester.py --symbol AAPL --speed 2.0
+
+.PHONY: backtest-date-range
+backtest-date-range: ## Run backtest with custom date range
+	@echo "$(GREEN)Running backtest with custom date range...$(NC)"
+	docker run --rm -v "$(PWD)":/app --env-file .env $(DOCKER_IMAGE) $(PYTHON_CMD) backtester/backtester.py --symbol AAPL --min-date 2022-01-01 --max-date 2023-01-01
+
+.PHONY: backtest-verbose
+backtest-verbose: ## Run backtest with verbose logging
+	@echo "$(GREEN)Running verbose backtest...$(NC)"
+	docker run --rm -v "$(PWD)":/app --env-file .env $(DOCKER_IMAGE) $(PYTHON_CMD) backtester/backtester.py --symbol AAPL --verbose
+
+.PHONY: backtest-example
+backtest-example: ## Run backtester example script
+	@echo "$(GREEN)Running backtester examples...$(NC)"
+	docker run --rm -v "$(PWD)":/app --env-file .env $(DOCKER_IMAGE) $(PYTHON_CMD) backtester/example_usage.py
+
+.PHONY: backtest-test
+backtest-test: ## Run backtester unit tests
+	@echo "$(GREEN)Running backtester tests...$(NC)"
+	docker run --rm -v "$(PWD)":/app --env-file .env $(DOCKER_IMAGE) $(PYTHON_CMD) backtester/test_backtester.py
+
+.PHONY: backtest-with-volumes
+backtest-with-volumes: ## Run backtest with volume mounts for data and results
+	@echo "$(GREEN)Running backtest with volume mounts...$(NC)"
+	docker run --rm -v "$(PWD)":/app -v "$(PWD)/backtest_results":/app/backtest_results \
+		-v "$(PWD)/data":/app/data -v "$(PWD)/logs":/app/logs --env-file .env \
+		$(DOCKER_IMAGE) $(PYTHON_CMD) backtester/backtester.py --symbol AAPL --speed 2.0
+
+.PHONY: backtest-interactive
+backtest-interactive: ## Run backtester in interactive mode
+	@echo "$(GREEN)Starting backtester interactive mode...$(NC)"
+	docker run -it --rm -v "$(PWD)":/app -v "$(PWD)/backtest_results":/app/backtest_results \
+		-v "$(PWD)/data":/app/data -v "$(PWD)/logs":/app/logs --env-file .env \
+		$(DOCKER_IMAGE) /bin/bash
+
+.PHONY: backtest-validate
+backtest-validate: ## Run backtest with validation and visualization
+	@echo "$(GREEN)Running backtest with validation...$(NC)"
+	docker run --rm -v "$(PWD)":/app --env-file .env \
+		$(DOCKER_IMAGE) $(PYTHON_CMD) backtester/run_validation.py --symbol AAPL
 
 ##@ Cleanup
 
@@ -121,4 +183,10 @@ quick-start: build run-status ## Quick start: build and show status
 # make run-status              # Show system status
 # make run-api                 # Start API server
 # make run-interactive         # Interactive shell
+# make backtest-setup          # Validate backtester setup
+# make backtest-single         # Run single symbol backtest
+# make backtest-multiple       # Run multiple symbol backtests
+# make backtest-fast           # Run fast backtest (2x speed)
+# make backtest-with-volumes   # Run with volume mounts
+# make backtest-interactive    # Interactive backtester shell
 # make clean                   # Clean up resources

@@ -27,7 +27,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 COPY . .
 
 # Create directories for data and outputs
-RUN mkdir -p /app/data /app/outputs /app/logs
+RUN mkdir -p /app/data /app/outputs /app/logs /app/backups
 
 # Set permissions
 RUN chmod +x core/cli.py

@@ -14,7 +14,7 @@ import time
 
 from .realtime_system import RealTimeSystem
 from .config import Config
-from ..monitoring.performance_monitor import PerformanceMonitor
+from monitoring.performance_monitor import PerformanceMonitor
 
 logger = logging.getLogger(__name__)
 

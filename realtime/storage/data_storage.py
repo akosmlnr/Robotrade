@@ -214,14 +214,22 @@ class DataStorage:
             # Prepare data for insertion
             records = []
             for timestamp, row in data.iterrows():
+                # Convert timestamp to string format that SQLite can handle
+                if hasattr(timestamp, 'to_pydatetime'):
+                    timestamp_str = timestamp.to_pydatetime().strftime('%Y-%m-%d %H:%M:%S')
+                elif hasattr(timestamp, 'strftime'):
+                    timestamp_str = timestamp.strftime('%Y-%m-%d %H:%M:%S')
+                else:
+                    timestamp_str = str(timestamp)
+                
                 records.append((
                     symbol,
-                    timestamp,
-                    row.get('open'),
-                    row.get('high'),
-                    row.get('low'),
-                    row.get('close'),
-                    row.get('volume')
+                    timestamp_str,
+                    float(row.get('open', 0)) if pd.notna(row.get('open')) else None,
+                    float(row.get('high', 0)) if pd.notna(row.get('high')) else None,
+                    float(row.get('low', 0)) if pd.notna(row.get('low')) else None,
+                    float(row.get('close', 0)) if pd.notna(row.get('close')) else None,
+                    int(row.get('volume', 0)) if pd.notna(row.get('volume')) else None
                 ))
             
             # Insert data (ignore duplicates)
@@ -264,7 +272,9 @@ class DataStorage:
             rows = cursor.fetchall()
             
             if not rows:
-                logger.warning(f"No historical data found for {symbol} between {start_date} and {end_date}")
+                # Only log warning if not in backtesting mode (backtest database)
+                if not self.db_path.endswith('backtest_data.db'):
+                    logger.warning(f"No historical data found for {symbol} between {start_date} and {end_date}")
                 return pd.DataFrame()
             
             # Convert to DataFrame
@@ -305,6 +315,21 @@ class DataStorage:
             end_time = datetime.now()
             start_time = end_time - timedelta(hours=hours_back)
             
+            # Adjust for weekends - if we're on weekend, look back to last Friday
+            if end_time.weekday() >= 5:  # Saturday = 5, Sunday = 6
+                days_back = end_time.weekday() - 4  # Go back to Friday
+                end_time = end_time - timedelta(days=days_back)
+                end_time = end_time.replace(hour=16, minute=0, second=0, microsecond=0)  # 4 PM market close
+                
+                # Adjust start time accordingly
+                start_time = end_time - timedelta(hours=hours_back)
+                
+                # Ensure start time doesn't go to weekend
+                while start_time.weekday() >= 5:
+                    start_time = start_time - timedelta(days=1)
+                start_time = start_time.replace(hour=9, minute=30, second=0, microsecond=0)  # 9:30 AM market open
+            
+            logger.info(f"Retrieved {len(self.retrieve_historical_data(symbol, start_time, end_time))} historical records for {symbol}")
             return self.retrieve_historical_data(symbol, start_time, end_time)
             
         except Exception as e:
@@ -336,12 +361,16 @@ class DataStorage:
             if actual_price is not None:
                 prediction_error = abs(predicted_price - actual_price) / actual_price
             
+            # Convert datetime objects to strings for SQLite compatibility
+            prediction_timestamp_str = prediction_timestamp.strftime('%Y-%m-%d %H:%M:%S') if hasattr(prediction_timestamp, 'strftime') else str(prediction_timestamp)
+            prediction_date_str = prediction_date.strftime('%Y-%m-%d %H:%M:%S') if hasattr(prediction_date, 'strftime') else str(prediction_date)
+            
             cursor.execute("""
                 INSERT INTO predictions 
                 (symbol, prediction_timestamp, prediction_date, predicted_price, 
                  confidence_score, actual_price, prediction_error)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, (symbol, prediction_timestamp, prediction_date, predicted_price, 
+            """, (symbol, prediction_timestamp_str, prediction_date_str, predicted_price, 
                   confidence_score, actual_price, prediction_error))
             
             self.connection.commit()
@@ -704,16 +733,25 @@ class DataStorage:
             True if successful
         """
         try:
+            # Ensure we have a valid connection
+            if not self.connection:
+                self._initialize_database()
+            
             cursor = self.connection.cursor()
             
+            # Convert datetime to string for SQLite compatibility
+            timestamp_str = metric_timestamp.strftime('%Y-%m-%d %H:%M:%S') if hasattr(metric_timestamp, 'strftime') else str(metric_timestamp)
+            
+            # Simple insert without explicit transaction management
             cursor.execute("""
                 INSERT INTO performance_metrics 
                 (symbol, metric_name, metric_value, metric_timestamp, metadata)
                 VALUES (?, ?, ?, ?, ?)
-            """, (symbol, metric_name, metric_value, metric_timestamp, json.dumps(metadata) if metadata else None))
+            """, (symbol, metric_name, metric_value, timestamp_str, json.dumps(metadata) if metadata else '{}'))
             
             self.connection.commit()
-            logger.debug(f"Stored performance metric {metric_name} for {symbol}")
+            symbol_display = symbol if symbol else "system"
+            logger.debug(f"Stored performance metric {metric_name} for {symbol_display}")
             return True
             
         except Exception as e:

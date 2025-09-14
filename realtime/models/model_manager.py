@@ -37,6 +37,126 @@ class ModelManager:
         
         logger.info(f"ModelManager initialized with models directory: {models_dir}")
     
+    def _create_default_config(self, stock_symbol: str, model_path: str, model: tf.keras.Model = None) -> Dict[str, Any]:
+        """
+        Create a default configuration by analyzing the model and scaler
+        
+        Args:
+            stock_symbol: Stock symbol
+            model_path: Path to model directory
+            model: Pre-loaded model (optional)
+            
+        Returns:
+            Default configuration dictionary
+        """
+        try:
+            # Use provided model or load it
+            if model is None:
+                # Find model file
+                model_weights_h5 = os.path.join(model_path, "model_weights.h5")
+                model_weights_keras = os.path.join(model_path, "model_weights.keras")
+                
+                model_file = None
+                if os.path.exists(model_weights_h5):
+                    model_file = model_weights_h5
+                elif os.path.exists(model_weights_keras):
+                    model_file = model_weights_keras
+                
+                if not model_file:
+                    raise ValueError("No model file found")
+                
+                # Load model to analyze architecture
+                model = tf.keras.models.load_model(model_file)
+            
+            input_shape = model.input_shape
+            if isinstance(input_shape, list):
+                input_shape = input_shape[0]
+            
+            # Extract sequence length and number of features
+            if len(input_shape) == 3:  # (batch, sequence_length, features)
+                sequence_length = input_shape[1]
+                num_features = input_shape[2]
+            else:
+                # Fallback values
+                sequence_length = 60
+                num_features = 5
+            
+            # Load scaler to understand feature structure
+            scaler_path = os.path.join(model_path, "scaler.pkl")
+            scaler = None
+            if os.path.exists(scaler_path):
+                with open(scaler_path, 'rb') as f:
+                    scaler = pickle.load(f)
+            
+            # Create default features list
+            default_features = [
+                'open', 'high', 'low', 'close', 'volume',
+                'sma_5', 'sma_10', 'sma_20',
+                'ema_5', 'ema_10', 'ema_20',
+                'rsi', 'macd', 'macd_signal', 'macd_histogram',
+                'bb_upper', 'bb_middle', 'bb_lower',
+                'atr', 'stoch_k', 'stoch_d',
+                'price_change', 'volume_change', 'volatility'
+            ]
+            
+            # Use the number of features from the model
+            features = default_features[:num_features]
+            if num_features > len(default_features):
+                for i in range(len(default_features), num_features):
+                    features.append(f'feature_{i}')
+            
+            # Create default configuration
+            config = {
+                "symbol": stock_symbol,
+                "model_type": "LSTM",
+                "sequence_length": sequence_length,
+                "prediction_length": 672,  # 1 week = 7 days * 24 hours * 4 (15-min intervals)
+                "features": features,
+                "model_architecture": {
+                    "input_shape": input_shape,
+                    "total_params": model.count_params(),
+                    "trainable_params": sum([tf.keras.backend.count_params(w) for w in model.trainable_weights]),
+                    "non_trainable_params": sum([tf.keras.backend.count_params(w) for w in model.non_trainable_weights])
+                },
+                "scaling": {
+                    "scaler_type": type(scaler).__name__ if scaler else "Unknown",
+                    "feature_range": getattr(scaler, 'feature_range', None) if scaler else None
+                },
+                "training_info": {
+                    "created_at": datetime.now().isoformat(),
+                    "data_source": "Unknown",
+                    "timeframe": "15min",
+                    "lookback_days": 30
+                },
+                "performance_metrics": {
+                    "rmse": 0.0,
+                    "mae": 0.0,
+                    "r2": 0.0,
+                    "accuracy": 0.0
+                },
+                "prediction_settings": {
+                    "confidence_threshold": 0.6,
+                    "validation_threshold": 0.02,
+                    "min_profit_percent": 2.0
+                },
+                "auto_generated": True
+            }
+            
+            logger.info(f"Created default config for {stock_symbol}: sequence_length={sequence_length}, features={len(features)}")
+            return config
+            
+        except Exception as e:
+            logger.error(f"Error creating default config for {stock_symbol}: {e}")
+            # Return minimal config as fallback
+            return {
+                "symbol": stock_symbol,
+                "model_type": "LSTM",
+                "sequence_length": 60,
+                "prediction_length": 672,
+                "features": ["open", "high", "low", "close", "volume"],
+                "auto_generated": True
+            }
+    
     def load_model(self, stock_symbol: str, model_path: str = None) -> bool:
         """
         Load a pre-trained model for a stock symbol
@@ -56,22 +176,31 @@ class ModelManager:
                 logger.error(f"Model path does not exist: {model_path}")
                 return False
             
-            # Load model configuration
-            config_path = os.path.join(model_path, "model_config.json")
-            if not os.path.exists(config_path):
-                logger.error(f"Model config not found: {config_path}")
-                return False
+            # Find model weights file (try both .h5 and .keras formats)
+            model_weights_h5 = os.path.join(model_path, "model_weights.h5")
+            model_weights_keras = os.path.join(model_path, "model_weights.keras")
             
-            with open(config_path, 'r') as f:
-                config = json.load(f)
+            model_weights_path = None
+            if os.path.exists(model_weights_h5):
+                model_weights_path = model_weights_h5
+            elif os.path.exists(model_weights_keras):
+                model_weights_path = model_weights_keras
+            else:
+                logger.error(f"Model weights not found. Expected either {model_weights_h5} or {model_weights_keras}")
+                return False
             
             # Load model weights
-            model_weights_path = os.path.join(model_path, "model_weights.h5")
-            if not os.path.exists(model_weights_path):
-                logger.error(f"Model weights not found: {model_weights_path}")
-                return False
-            
             model = tf.keras.models.load_model(model_weights_path)
+            
+            # Try to load model configuration, create default if not found
+            config_path = os.path.join(model_path, "model_config.json")
+            if os.path.exists(config_path):
+                with open(config_path, 'r') as f:
+                    config = json.load(f)
+                logger.info(f"Loaded existing config for {stock_symbol}")
+            else:
+                logger.info(f"No config file found for {stock_symbol}, creating default config")
+                config = self._create_default_config(stock_symbol, model_path, model)
             
             # Load scaler
             scaler_path = os.path.join(model_path, "scaler.pkl")
@@ -131,9 +260,11 @@ class ModelManager:
             for item in os.listdir(self.models_dir):
                 model_path = os.path.join(self.models_dir, item)
                 if os.path.isdir(model_path):
-                    # Check if all required files exist
-                    required_files = ["model_weights.h5", "scaler.pkl", "model_config.json"]
-                    if all(os.path.exists(os.path.join(model_path, f)) for f in required_files):
+                    # Check if all required files exist (model can be .h5 or .keras)
+                    required_files = ["scaler.pkl"]
+                    has_model = (os.path.exists(os.path.join(model_path, "model_weights.h5")) or 
+                               os.path.exists(os.path.join(model_path, "model_weights.keras")))
+                    if has_model and all(os.path.exists(os.path.join(model_path, f)) for f in required_files):
                         available_models.append(item)
             
             logger.info(f"Found {len(available_models)} available models: {available_models}")
@@ -177,16 +308,24 @@ class ModelManager:
             True if valid, False otherwise
         """
         try:
-            # Check if all required files exist
-            required_files = ["model_weights.h5", "scaler.pkl", "model_config.json"]
+            # Check if all required files exist (model can be .h5 or .keras)
+            required_files = ["scaler.pkl"]
             for file in required_files:
                 file_path = os.path.join(model_path, file)
                 if not os.path.exists(file_path):
                     logger.error(f"Required file missing: {file_path}")
                     return False
             
+            # Check for model file
+            model_weights_h5 = os.path.join(model_path, "model_weights.h5")
+            model_weights_keras = os.path.join(model_path, "model_weights.keras")
+            
+            if not os.path.exists(model_weights_h5) and not os.path.exists(model_weights_keras):
+                logger.error(f"Model weights not found. Expected either {model_weights_h5} or {model_weights_keras}")
+                return False
+            
             # Try to load the model
-            model_weights_path = os.path.join(model_path, "model_weights.h5")
+            model_weights_path = model_weights_h5 if os.path.exists(model_weights_h5) else model_weights_keras
             model = tf.keras.models.load_model(model_weights_path)
             
             # Try to load the scaler
@@ -194,10 +333,14 @@ class ModelManager:
             with open(scaler_path, 'rb') as f:
                 scaler = pickle.load(f)
             
-            # Try to load the config
+            # Try to load the config, create default if not found
             config_path = os.path.join(model_path, "model_config.json")
-            with open(config_path, 'r') as f:
-                config = json.load(f)
+            if os.path.exists(config_path):
+                with open(config_path, 'r') as f:
+                    config = json.load(f)
+            else:
+                # Create default config for validation using the already loaded model
+                config = self._create_default_config(os.path.basename(model_path), model_path, model)
             
             logger.info(f"Model validation successful for {model_path}")
             return True

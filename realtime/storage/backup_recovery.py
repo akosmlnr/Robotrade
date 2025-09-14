@@ -104,10 +104,7 @@ class BackupRecoveryManager:
         self.backup_history: List[BackupInfo] = []
         self.recovery_history: List[RecoveryInfo] = []
         
-        # Load existing backup metadata
-        self._load_backup_metadata()
-        
-        # Backup statistics
+        # Backup statistics (initialize before loading metadata)
         self.backup_stats = {
             'total_backups': 0,
             'successful_backups': 0,
@@ -116,6 +113,9 @@ class BackupRecoveryManager:
             'last_backup': None,
             'last_successful_backup': None
         }
+        
+        # Load existing backup metadata
+        self._load_backup_metadata()
         
         # Auto-backup settings
         self.auto_backup_enabled = self.config.get('auto_backup_enabled', True)

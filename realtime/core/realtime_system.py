@@ -14,23 +14,23 @@ import sys
 
 logger = logging.getLogger(__name__)
 
-from ..data.data_fetcher import PolygonDataFetcher
-from ..storage.data_storage import DataStorage
-from ..models.model_manager import ModelManager
-from ..models.prediction_engine import PredictionEngine
+from data.data_fetcher import PolygonDataFetcher
+from storage.data_storage import DataStorage
+from models.model_manager import ModelManager
+from models.prediction_engine import PredictionEngine
 
 # Additional system components
-from ..prediction.update_scheduler import UpdateScheduler
-from ..validation.validation_workflow import PredictionValidationWorkflow
-from ..validation.reprediction_triggers import RepredictionTriggers
-from ..prediction.prediction_history import PredictionHistoryTracker
-from ..storage.data_retention import DataRetentionManager
-from ..storage.backup_recovery import BackupRecoveryManager
-from ..export.data_export import DataExporter
-from ..monitoring.accuracy_tracker import AccuracyTracker
-from ..monitoring.performance_monitor import PerformanceMonitor
-from ..monitoring.alerting_system import AlertingSystem
-from ..monitoring.performance_dashboard import PerformanceDashboard
+from prediction.update_scheduler import UpdateScheduler
+from validation.validation_workflow import PredictionValidationWorkflow
+from validation.reprediction_triggers import RepredictionTriggers
+from prediction.prediction_history import PredictionHistoryTracker
+from storage.data_retention import DataRetentionManager
+from storage.backup_recovery import BackupRecoveryManager
+from export.data_export import DataExporter
+from monitoring.accuracy_tracker import AccuracyTracker
+from monitoring.performance_monitor import PerformanceMonitor
+from monitoring.alerting_system import AlertingSystem
+from monitoring.performance_dashboard import PerformanceDashboard
 
 class RealTimeSystem:
     """
@@ -87,7 +87,7 @@ class RealTimeSystem:
             'polygon_api_key': None,  # Will use environment variable
             'rate_limit': 100,
             'db_path': 'realtime_data.db',
-            'models_dir': 'models',
+            'models_dir': 'lstms',
             'validation_threshold': 0.02,  # 2% difference threshold for reprediction
             'confidence_threshold': 0.6,  # Minimum confidence for trade recommendations
             'max_recommendations_per_symbol': 5,
@@ -107,15 +107,19 @@ class RealTimeSystem:
         """Load models for all configured symbols"""
         available_models = self.model_manager.list_available_models()
         
+        # Filter symbols to only include those with available models
+        self.symbols = [symbol for symbol in self.symbols if symbol in available_models]
+        
+        if not self.symbols:
+            logger.warning("No models available for any configured symbols. Available models: " + str(available_models))
+            return
+        
         for symbol in self.symbols:
-            if symbol in available_models:
-                success = self.model_manager.load_model(symbol)
-                if success:
-                    logger.info(f"Successfully loaded model for {symbol}")
-                else:
-                    logger.error(f"Failed to load model for {symbol}")
+            success = self.model_manager.load_model(symbol)
+            if success:
+                logger.info(f"Successfully loaded model for {symbol}")
             else:
-                logger.warning(f"No model available for {symbol}")
+                logger.error(f"Failed to load model for {symbol}")
     
     def _initialize_system_components(self):
         """Initialize all system components"""

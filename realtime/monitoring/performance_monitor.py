@@ -377,7 +377,7 @@ class PerformanceMonitor:
                     'metric_type': metric_type.value,
                     'metric_category': metric_category.value,
                     'unit': unit,
-                    **metadata
+                    **(metadata or {})
                 }
             )
             

@@ -100,23 +100,35 @@ class PolygonDataFetcher:
         url = f"{self.base_url}{endpoint}"
         
         try:
+            logger.debug(f"Making request to: {url}")
+            logger.debug(f"Request params: {params}")
+            
             response = self.session.get(url, params=params, timeout=30)
+            logger.debug(f"Response status: {response.status_code}")
+            logger.debug(f"Response headers: {dict(response.headers)}")
+            
             response.raise_for_status()
             
             data = response.json()
+            logger.debug(f"Response data: {data}")
             
             if data.get('status') == 'OK':
                 return data
             else:
                 error_msg = data.get('message', 'Unknown API error')
                 logger.error(f"Polygon API error: {error_msg}")
+                logger.error(f"Full API response: {data}")
                 raise Exception(f"Polygon API error: {error_msg}")
                 
         except requests.exceptions.RequestException as e:
             logger.error(f"Request failed: {e}")
+            logger.error(f"Request URL: {url}")
+            logger.error(f"Request params: {params}")
             raise
         except Exception as e:
             logger.error(f"Unexpected error: {e}")
+            logger.error(f"Request URL: {url}")
+            logger.error(f"Request params: {params}")
             raise
     
     def fetch_15min_data(self, symbol: str, start_time: datetime, end_time: datetime) -> pd.DataFrame:
@@ -148,8 +160,28 @@ class PolygonDataFetcher:
             data = self._make_request(endpoint, params)
             
             if not data.get('results'):
-                logger.warning(f"No 15-minute data found for {symbol}")
-                return pd.DataFrame()
+                logger.warning(f"No 15-minute data found for {symbol} from {start_str} to {end_str}")
+                
+                # Try fallback: get data from previous trading day
+                logger.info(f"Trying fallback: previous trading day for {symbol}")
+                fallback_end = start_time - timedelta(days=1)
+                fallback_start = fallback_end - timedelta(days=1)
+                
+                # Ensure fallback doesn't go to weekend
+                while fallback_end.weekday() >= 5:
+                    fallback_end = fallback_end - timedelta(days=1)
+                while fallback_start.weekday() >= 5:
+                    fallback_start = fallback_start - timedelta(days=1)
+                
+                fallback_start_str = fallback_start.strftime('%Y-%m-%d')
+                fallback_end_str = fallback_end.strftime('%Y-%m-%d')
+                
+                endpoint = f"/v2/aggs/ticker/{symbol}/range/15/minute/{fallback_start_str}/{fallback_end_str}"
+                data = self._make_request(endpoint, params)
+                
+                if not data.get('results'):
+                    logger.warning(f"No fallback data found for {symbol}")
+                    return pd.DataFrame()
             
             # Convert to DataFrame
             bars = []
@@ -186,9 +218,26 @@ class PolygonDataFetcher:
             DataFrame with latest OHLCV data
         """
         try:
-            end_time = datetime.now()
+            # Get current time and adjust for weekends
+            current_time = datetime.now()
+            
+            # If it's weekend, go back to last Friday
+            if current_time.weekday() >= 5:  # Saturday = 5, Sunday = 6
+                days_back = current_time.weekday() - 4  # Go back to Friday
+                current_time = current_time - timedelta(days=days_back)
+                current_time = current_time.replace(hour=16, minute=0, second=0, microsecond=0)  # 4 PM market close
+            
+            end_time = current_time
             start_time = end_time - timedelta(hours=lookback_hours)
             
+            # Ensure we don't go back to weekend
+            if start_time.weekday() >= 5:
+                # Go back to previous Friday
+                days_back = start_time.weekday() - 4
+                start_time = start_time - timedelta(days=days_back)
+                start_time = start_time.replace(hour=9, minute=30, second=0, microsecond=0)  # 9:30 AM market open
+            
+            logger.info(f"Adjusted time range for {symbol}: {start_time} to {end_time}")
             return self.fetch_15min_data(symbol, start_time, end_time)
             
         except Exception as e:

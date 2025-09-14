@@ -9,10 +9,10 @@ from datetime import datetime, timedelta
 from typing import List, Dict, Any
 
 # Import components
-from ..storage.data_storage import DataStorage
-from ..models.model_manager import ModelManager
-from ..models.prediction_engine import PredictionEngine
-from ..core.realtime_system import RealTimeSystem
+from storage.data_storage import DataStorage
+from models.model_manager import ModelManager
+from models.prediction_engine import PredictionEngine
+from core.realtime_system import RealTimeSystem
 
 # Setup logging
 logging.basicConfig(

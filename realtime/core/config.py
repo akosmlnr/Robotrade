@@ -43,7 +43,7 @@ class Config:
         """Get default configuration"""
         return {
             # System settings
-            "symbols": ["AAPL", "GOOGL", "MSFT", "TSLA"],
+            "symbols": ["AAPL"],
             "update_interval": 15,  # minutes
             "min_profit_percent": 2.0,
             "validation_threshold": 0.02,  # 2% difference threshold for reprediction
@@ -59,7 +59,7 @@ class Config:
             "data_retention_days": 30,
             
             # Model settings
-            "models_dir": "models",
+            "models_dir": "lstms",
             "model_cache_max_age_hours": 24,
             
             # Logging settings

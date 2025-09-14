@@ -48,15 +48,21 @@ class PredictionEngine:
             scaler = model_data['scaler']
             config = model_data['config']
             
-            # Get latest market data
-            latest_data = self.data_storage.get_latest_data(symbol, hours_back=24)
+            # Prepare data for prediction
+            sequence_length = config['sequence_length']
+            features = config['features']
+            
+            # Get latest market data - need enough for sequence_length (25) plus some buffer
+            # Since we need 25 data points and get 15-minute intervals, we need at least 25 * 15 minutes = 375 minutes = 6.25 hours
+            # But since we're on weekend, let's look back further to get enough data
+            hours_back = max(24, sequence_length * 15 // 60 + 24)  # At least 24 hours, or enough for sequence + 24 hour buffer
+            latest_data = self.data_storage.get_latest_data(symbol, hours_back=hours_back)
+            
             if latest_data.empty:
                 logger.error(f"No market data available for {symbol}")
                 return None
             
-            # Prepare data for prediction
-            sequence_length = config['sequence_length']
-            features = config['features']
+            logger.info(f"Retrieved {len(latest_data)} records for {symbol} prediction (need {sequence_length})")
             
             # Create prediction sequence
             prediction_sequence = self.create_prediction_sequence(
@@ -77,6 +83,7 @@ class PredictionEngine:
             
             # Use the last known price as starting point
             current_price = latest_data['close'].iloc[-1]
+            logger.info(f"Starting prediction from price: ${current_price:.2f} at {current_time}")
             
             # Safety check for valid current price
             if current_price <= 0 or np.isnan(current_price) or np.isinf(current_price):
@@ -89,6 +96,12 @@ class PredictionEngine:
                     # Make prediction for next time step
                     prediction_scaled = model.predict(prediction_sequence, verbose=0)
                     prediction_price = scaler.inverse_transform(prediction_scaled)[0][0]
+                    
+                    # Debug logging for first few predictions
+                    if i < 5:
+                        logger.info(f"Step {i}: Scaled prediction: {prediction_scaled[0][0]:.6f}, "
+                                   f"Inverse transform: {prediction_price:.2f}, "
+                                   f"Previous price: {current_price:.2f}")
                     
                     # Validate prediction
                     if not self.validate_prediction_output(prediction_price):
@@ -141,7 +154,15 @@ class PredictionEngine:
                 'data_points': weekly_intervals
             }
             
+            # Log prediction statistics
+            pred_prices = np.array(predictions)
+            price_std = np.std(pred_prices)
+            price_range = np.max(pred_prices) - np.min(pred_prices)
+            
             logger.info(f"Generated {len(predictions)} predictions for {symbol} with confidence {confidence_score:.3f}")
+            logger.info(f"Prediction statistics: range=${price_range:.6f}, std=${price_std:.6f}, "
+                       f"min=${np.min(pred_prices):.2f}, max=${np.max(pred_prices):.2f}")
+            
             return result
             
         except Exception as e:
@@ -384,6 +405,10 @@ class PredictionEngine:
                     
                     profit_percent = ((exit_price - entry_price) / entry_price) * 100
                     
+                    # Debug logging for first few iterations
+                    if i < 3 and j < i + 10:
+                        logger.debug(f"Checking profit: entry=${entry_price:.2f}, exit=${exit_price:.2f}, profit={profit_percent:.2f}%")
+                    
                     if profit_percent >= min_profit_percent:
                         # Check if this recommendation doesn't overlap with existing ones
                         if not self.recommendation_overlaps(recommendations, entry_time, exit_time):
@@ -413,6 +438,44 @@ class PredictionEngine:
                             # Skip ahead to avoid overlapping recommendations
                             i = j
                             break
+            
+            # Calculate overall statistics for debugging
+            if len(predictions) > 1:
+                max_profit = 0
+                profitable_count = 0
+                all_profits = []
+                
+                for i in range(len(predictions) - 1):
+                    for j in range(i + 1, min(i + 100, len(predictions))):
+                        profit_percent = ((predictions[j] - predictions[i]) / predictions[i]) * 100
+                        all_profits.append(profit_percent)
+                        max_profit = max(max_profit, profit_percent)
+                        if profit_percent >= min_profit_percent:
+                            profitable_count += 1
+                
+                # Calculate profit distribution
+                if all_profits:
+                    avg_profit = sum(all_profits) / len(all_profits)
+                    positive_count = sum(1 for p in all_profits if p > 0)
+                    under_2_percent = sum(1 for p in all_profits if 0 < p < min_profit_percent)
+                    negative_count = sum(1 for p in all_profits if p < 0)
+                    
+                    logger.info(f"Trade recommendation analysis for {symbol}:")
+                    logger.info(f"  - Total predictions analyzed: {len(predictions)}")
+                    logger.info(f"  - Total opportunities evaluated: {len(all_profits)}")
+                    logger.info(f"  - Maximum profit opportunity: {max_profit:.2f}%")
+                    logger.info(f"  - Average profit opportunity: {avg_profit:.2f}%")
+                    logger.info(f"  - Positive opportunities: {positive_count}")
+                    logger.info(f"  - Opportunities under {min_profit_percent}%: {under_2_percent}")
+                    logger.info(f"  - Opportunities >= {min_profit_percent}%: {profitable_count}")
+                    logger.info(f"  - Negative opportunities: {negative_count}")
+                    logger.info(f"  - Generated recommendations: {len(recommendations)}")
+                    
+                    # Show some examples of under-2% opportunities
+                    if under_2_percent > 0:
+                        under_2_examples = [p for p in all_profits if 0 < p < min_profit_percent]
+                        under_2_examples.sort(reverse=True)
+                        logger.info(f"  - Best opportunities under {min_profit_percent}%: {under_2_examples[:5]}")
             
             logger.info(f"Generated {len(recommendations)} trade recommendations for {symbol}")
             return recommendations
