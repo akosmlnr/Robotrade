@@ -279,15 +279,20 @@ class PredictionSimulator:
             
             logger.info(f"Making sequential predictions for {symbol} starting from {prediction_start} (trading days only)")
             
-            # Create a rolling dataset that includes previous predictions' results
-            # This simulates how the model would work in production with updated data
-            rolling_data = self.full_historical_data.copy()
+            # Use only historical data for all predictions to maintain stability
+            # The rolling data approach was causing prediction instability due to feedback loops
+            base_historical_data = self.full_historical_data.copy()
             
-            # Predict for up to 30 trading days (six weeks of trading)
+            # Predict for up to 90 trading days (18 weeks of trading)
             trading_days_predicted = 0
             current_prediction_day = prediction_start
+            max_attempts = 200  # Prevent infinite loop
+            attempts = 0
             
-            while trading_days_predicted < 30:  # Maximum 30 trading days (six weeks)
+            logger.info(f"Starting prediction generation for 90 trading days from {prediction_start}")
+            
+            while trading_days_predicted < 90 and attempts < max_attempts:  # Maximum 90 trading days (18 weeks)
+                attempts += 1
                 # Skip weekends
                 if current_prediction_day.weekday() >= 5:  # Saturday or Sunday
                     current_prediction_day += timedelta(days=1)
@@ -317,8 +322,9 @@ class PredictionSimulator:
                             prediction_time = prediction_time.replace(hour=16, minute=0, second=0)
                     
                     # Get data up to the prediction time (simulating end-of-day prediction)
-                    historical_data_up_to_prediction = rolling_data[
-                        rolling_data.index <= prediction_time
+                    # Use only historical data to maintain prediction stability
+                    historical_data_up_to_prediction = base_historical_data[
+                        base_historical_data.index <= prediction_time
                     ].copy()
                     
                     if len(historical_data_up_to_prediction) < sequence_length:
@@ -384,31 +390,38 @@ class PredictionSimulator:
                     daily_timestamps.append(current_prediction_day)
                     prediction_timestamps.append(prediction_time)
                     
-                    # CRITICAL: Update the rolling dataset with the prediction result
-                    # This simulates how the model would work in production with updated data
-                    if trading_days_predicted > 0:  # Don't update for the first prediction
-                        # Add the prediction as a new data point for the next prediction
-                        prediction_timestamp = current_prediction_day.replace(hour=9, minute=30, second=0)
-                        
-                        # Create a new row with the predicted price
-                        new_row = pd.DataFrame({
-                            'close': [prediction_price],
-                            'open': [prediction_price],  # Use prediction as open price
-                            'high': [prediction_price * 1.01],  # Add small variation
-                            'low': [prediction_price * 0.99],   # Add small variation
-                            'volume': [historical_data_up_to_prediction['volume'].iloc[-1]]  # Use last volume
-                        }, index=[prediction_timestamp])
-                        
-                        # Add to rolling data for next prediction
-                        rolling_data = pd.concat([rolling_data, new_row])
-                        rolling_data = rolling_data.sort_index()
-                        
-                        logger.debug(f"Updated rolling data with prediction: {prediction_timestamp} = ${prediction_price:.2f}")
+                    # DISABLED: Rolling data updates cause prediction instability
+                    # The original approach of adding predictions to rolling data creates a feedback loop
+                    # where each prediction is based on previous predictions, leading to instability
+                    # Instead, we'll use only historical data for all predictions to maintain stability
+                    
+                    # if trading_days_predicted > 0:  # Don't update for the first prediction
+                    #     # Add the prediction as a new data point for the next prediction
+                    #     prediction_timestamp = current_prediction_day.replace(hour=9, minute=30, second=0)
+                    #     
+                    #     # Create a new row with the predicted price
+                    #     new_row = pd.DataFrame({
+                    #         'close': [prediction_price],
+                    #         'open': [prediction_price],  # Use prediction as open price
+                    #         'high': [prediction_price * 1.01],  # Add small variation
+                    #         'low': [prediction_price * 0.99],   # Add small variation
+                    #         'volume': [historical_data_up_to_prediction['volume'].iloc[-1]]  # Use last volume
+                    #     }, index=[prediction_timestamp])
+                    #     
+                    #     # Add to rolling data for next prediction
+                    #     rolling_data = pd.concat([rolling_data, new_row])
+                    #     rolling_data = rolling_data.sort_index()
+                    #     
+                    #     logger.debug(f"Updated rolling data with prediction: {prediction_timestamp} = ${prediction_price:.2f}")
                     
                     logger.debug(f"Trading day {trading_days_predicted + 1} prediction: ${prediction_price:.2f} (using data up to {prediction_time})")
                     
                     trading_days_predicted += 1
                     current_prediction_day += timedelta(days=1)
+                    
+                    # Log progress every 10 predictions
+                    if trading_days_predicted % 10 == 0:
+                        logger.info(f"Generated {trading_days_predicted}/90 predictions (attempt {attempts})")
                     
                 except Exception as e:
                     logger.warning(f"Error predicting trading day {trading_days_predicted + 1}: {e}")
@@ -444,7 +457,7 @@ class PredictionSimulator:
                 'confidence_score': confidence_score,
                 'sequence_length': sequence_length,
                 'total_predictions': len(daily_predictions),
-                'prediction_horizon': f'2 weeks ({len(daily_predictions)} trading days)',
+                'prediction_horizon': f'18 weeks ({len(daily_predictions)} trading days)',
                 'data_points': len(daily_predictions),
                 'available_data_points': len(available_data),
                 'latest_actual_price': available_data['close'].iloc[-1],
@@ -454,9 +467,15 @@ class PredictionSimulator:
                 'prediction_method': 'sequential_trading_days_simulation'
             }
             
-            logger.info(f"Generated sequential 2-week prediction for {symbol} at {current_timestamp}: "
+            logger.info(f"Generated sequential 18-week prediction for {symbol} at {current_timestamp}: "
                        f"${available_data['close'].iloc[-1]:.2f} -> ${daily_predictions[-1]:.2f} "
                        f"(change: {((daily_predictions[-1] - available_data['close'].iloc[-1]) / available_data['close'].iloc[-1] * 100):+.2f}%)")
+            logger.info(f"Total predictions generated: {len(daily_predictions)} (expected: 90 trading days)")
+            logger.info(f"Prediction period: {daily_timestamps[0] if daily_timestamps else 'N/A'} to {daily_timestamps[-1] if daily_timestamps else 'N/A'}")
+            logger.info(f"Loop completed after {attempts} attempts, {trading_days_predicted} trading days predicted")
+            
+            if trading_days_predicted < 90:
+                logger.warning(f"Only generated {trading_days_predicted} predictions instead of 90. This might be due to insufficient data or early exit conditions.")
             
             # Store actual data for validation - store the full historical data
             if not self.full_historical_data.empty:
@@ -585,7 +604,7 @@ class PredictionSimulator:
                 'confidence_score': confidence_score,
                 'sequence_length': sequence_length,
                 'total_predictions': len(predictions),
-                'prediction_horizon': '1 week',
+                'prediction_horizon': '2 weeks',
                 'data_points': weekly_intervals,
                 'available_data_points': len(available_data),
                 'latest_actual_price': available_data['close'].iloc[-1],

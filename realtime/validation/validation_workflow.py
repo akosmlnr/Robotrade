@@ -212,7 +212,7 @@ class PredictionValidationWorkflow:
             volatility = np.std(returns)
             
             # Get historical volatility for comparison
-            historical_data = self.data_storage.get_latest_data(symbol, hours_back=168)  # 1 week
+            historical_data = self.data_storage.get_latest_data(symbol, hours_back=336)  # 2 weeks
             if not historical_data.empty:
                 hist_returns = historical_data['close'].pct_change().dropna()
                 hist_volatility = hist_returns.std()

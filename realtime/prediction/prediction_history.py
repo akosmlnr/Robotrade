@@ -176,7 +176,7 @@ class PredictionHistoryTracker:
                 prediction_id=prediction_id,
                 symbol=prediction_result['symbol'],
                 prediction_timestamp=prediction_result['prediction_timestamp'],
-                prediction_horizon=prediction_result.get('prediction_horizon', '1 week'),
+                prediction_horizon=prediction_result.get('prediction_horizon', '2 weeks'),
                 predicted_prices=predicted_prices,
                 prediction_timestamps=prediction_timestamps,
                 confidence_score=prediction_result.get('confidence_score', 0.0),

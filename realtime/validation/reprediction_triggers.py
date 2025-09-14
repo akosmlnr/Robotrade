@@ -268,7 +268,7 @@ class RepredictionTriggers:
         """
         try:
             # Get recent volume data
-            volume_data = self.data_storage.get_latest_data(symbol, hours_back=168)  # 1 week
+            volume_data = self.data_storage.get_latest_data(symbol, hours_back=336)  # 2 weeks
             if volume_data.empty:
                 return None
             

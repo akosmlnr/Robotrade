@@ -1,6 +1,6 @@
 """
 Prediction Engine for Real-time LSTM Prediction System
-Phase 1.3.1: 1-Week Ahead Prediction Logic with Rolling Window Updates
+Phase 1.3.1: 2-Week Ahead Prediction Logic with Rolling Window Updates
 """
 
 import numpy as np
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class PredictionEngine:
     """
-    Core prediction engine for generating 1-week ahead predictions using pre-trained LSTM models
+    Core prediction engine for generating 2-week ahead predictions using pre-trained LSTM models
     """
     
     def __init__(self, model_manager, data_storage):
@@ -34,7 +34,7 @@ class PredictionEngine:
     
     def generate_weekly_prediction(self, symbol: str, model_data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Generate 1-week ahead prediction for a symbol
+        Generate 2-week ahead prediction for a symbol
         
         Args:
             symbol: Stock symbol
@@ -73,8 +73,8 @@ class PredictionEngine:
                 logger.error(f"Failed to create prediction sequence for {symbol}")
                 return None
             
-            # Generate 1-week prediction (7 days * 24 hours * 4 = 672 15-minute intervals)
-            weekly_intervals = 7 * 24 * 4
+            # Generate 2-week prediction (14 days * 24 hours * 4 = 1344 15-minute intervals)
+            biweekly_intervals = 14 * 24 * 4
             predictions = []
             timestamps = []
             
@@ -91,7 +91,7 @@ class PredictionEngine:
                 return None
             
             # Generate predictions step by step
-            for i in range(weekly_intervals):
+            for i in range(biweekly_intervals):
                 try:
                     # Make prediction for next time step
                     prediction_scaled = model.predict(prediction_sequence, verbose=0)
@@ -150,8 +150,8 @@ class PredictionEngine:
                 'confidence_score': confidence_score,
                 'sequence_length': sequence_length,
                 'total_predictions': len(predictions),
-                'prediction_horizon': '1 week',
-                'data_points': weekly_intervals
+                'prediction_horizon': '2 weeks',
+                'data_points': biweekly_intervals
             }
             
             # Log prediction statistics
@@ -166,7 +166,7 @@ class PredictionEngine:
             return result
             
         except Exception as e:
-            logger.error(f"Error generating weekly prediction for {symbol}: {e}")
+            logger.error(f"Error generating 2-week prediction for {symbol}: {e}")
             return None
     
     def create_prediction_sequence(self, data: pd.DataFrame, sequence_length: int, 

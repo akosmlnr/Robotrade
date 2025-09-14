@@ -54,10 +54,12 @@ class HistoricalDataFetcher:
         """
         try:
             # Default date ranges if not provided
+            # Use more recent data to ensure we have future data for validation
+            # We need at least 90 days of future data for validation
             if max_date is None:
-                max_date = datetime.now() - timedelta(days=365)  # 1 year ago
+                max_date = datetime.now() - timedelta(days=120)  # 4 months ago (to have 4+ months of future data)
             if min_date is None:
-                min_date = max_date - timedelta(days=365)  # 2 years ago
+                min_date = max_date - timedelta(days=180)  # 6 months before max_date
             
             # Ensure we have valid business days
             min_date = self._adjust_to_business_day(min_date, forward=True)
@@ -116,7 +118,7 @@ class HistoricalDataFetcher:
             
             # Extend the range to ensure we get enough data (add buffer for sequence length and historical context)
             buffer_start = start_date - timedelta(days=60)  # 60 days buffer for historical context (30 trading days + weekends + holidays)
-            buffer_end = end_date + timedelta(days=45)      # 45 days buffer for prediction period (30 trading days + weekends)
+            buffer_end = end_date + timedelta(days=135)     # 135 days buffer for prediction period (90 trading days + weekends)
             
             historical_data = self.data_fetcher.fetch_15min_data(
                 symbol, buffer_start, buffer_end
@@ -127,8 +129,8 @@ class HistoricalDataFetcher:
                 return pd.DataFrame()
             
             # Filter to include the week plus enough days after for validation
-            # This ensures we have actual data for the predicted time periods (30 trading days)
-            validation_end = end_date + timedelta(days=45)  # Include 6 weeks after for validation
+            # This ensures we have actual data for the predicted time periods (90 trading days)
+            validation_end = end_date + timedelta(days=135)  # Include 18 weeks after for validation
             week_data = historical_data[
                 (historical_data.index >= buffer_start) & 
                 (historical_data.index <= validation_end)

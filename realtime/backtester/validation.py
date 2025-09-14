@@ -122,15 +122,27 @@ class BacktestValidator:
                 logger.info(f"Actual data shape: {actual_data.shape}")
                 logger.info(f"Actual data range: {actual_data.index.min()} to {actual_data.index.max()}")
                 
+                # Check if we have enough future data for validation
+                prediction_start = pred_df.index.min()
+                prediction_end = pred_df.index.max()
+                actual_data_after_prediction = actual_data[actual_data.index > prediction_end]
+                logger.info(f"Prediction period: {prediction_start} to {prediction_end}")
+                logger.info(f"Actual data after prediction: {len(actual_data_after_prediction)} records")
+                if len(actual_data_after_prediction) > 0:
+                    logger.info(f"Actual data after prediction range: {actual_data_after_prediction.index.min()} to {actual_data_after_prediction.index.max()}")
+                
                 # For backtesting, we need to find actual data that corresponds to the predicted timestamps
-                # The actual data should contain the historical prices for the predicted time periods
+                # Since we're doing historical backtesting, we'll use the actual data that comes after the prediction period
+                # This simulates how the model would perform on future data
                 
                 # Align predictions with actual data
-                for _, pred_row in pred_df.iterrows():
+                logger.info(f"Processing {len(pred_df)} predictions from prediction result at {pred_timestamp}")
+                for idx, (_, pred_row) in enumerate(pred_df.iterrows()):
                     pred_time = pd.to_datetime(pred_row.name)  # Index is timestamp
                     pred_price = pred_row['predicted_price']
                     
-                    logger.debug(f"Looking for actual data for prediction at {pred_time}")
+                    if idx % 10 == 0:  # Log every 10th prediction
+                        logger.info(f"Processing prediction {idx+1}/{len(pred_df)} at {pred_time}")
                     
                     # Find the closest actual data point for this predicted timestamp
                     if 'timestamp' in actual_data.columns:
@@ -143,8 +155,9 @@ class BacktestValidator:
                     
                     logger.debug(f"Closest actual data at index {closest_idx}, time diff: {closest_time_diff}")
                     
-                    # Use the closest data point if it's within a reasonable time window
-                    if closest_time_diff <= timedelta(days=1):  # Within 1 day for daily predictions
+                    # Use the closest data point if it's within a strict time window
+                    # Only accept matches within 1 day for daily predictions to ensure accuracy
+                    if closest_time_diff <= timedelta(days=1):  # Within 1 day for strict matching
                         # For predictions, we need to determine if this is predicting the opening or closing price
                         # If the prediction time is after market hours (after 16:00), it's predicting next day's opening
                         # If the prediction time is during market hours, it's predicting the closing price
@@ -178,37 +191,9 @@ class BacktestValidator:
                         logger.info(f"Matched prediction {pred_time} with actual {actual_data.index[closest_idx]} "
                                    f"({price_type} price: {actual_price:.2f}, error: {pred_price - actual_price:.2f})")
                     else:
-                        # Try to find data within 2 days for more lenient matching
-                        if closest_time_diff <= timedelta(days=2):
-                            # Apply same logic for opening vs closing price
-                            prediction_hour = pred_timestamp.hour
-                            is_after_hours = prediction_hour >= 16  # After 4 PM
-                            
-                            if is_after_hours and pred_time.date() > pred_timestamp.date():
-                                actual_price = actual_data.iloc[closest_idx]['open']
-                                price_type = "opening"
-                            else:
-                                actual_price = actual_data.iloc[closest_idx]['close']
-                                price_type = "closing"
-                            
-                            time_horizon = (pred_time - pred_timestamp).total_seconds() / 3600
-                            
-                            validation_records.append({
-                                'timestamp': pred_time,
-                                'predicted_price': pred_price,
-                                'actual_price': actual_price,
-                                'prediction_time': pred_timestamp,
-                                'time_horizon': time_horizon,
-                                'error': pred_price - actual_price,
-                                'error_percent': ((pred_price - actual_price) / actual_price) * 100,
-                                'price_type': price_type
-                            })
-                            
-                            logger.info(f"Matched prediction {pred_time} with actual {actual_data.index[closest_idx]} "
-                                       f"({price_type} price: {actual_price:.2f}, error: {pred_price - actual_price:.2f}) - lenient match")
-                        else:
-                            logger.warning(f"No close match for prediction at {pred_time} "
-                                         f"(closest: {actual_data.index[closest_idx]}, diff: {closest_time_diff})")
+                        # No lenient matching - only use strict matches
+                        logger.warning(f"No close match for prediction at {pred_time} "
+                                     f"(closest: {actual_data.index[closest_idx]}, diff: {closest_time_diff})")
             
             if not validation_records:
                 logger.warning("No validation records created")
@@ -220,6 +205,17 @@ class BacktestValidator:
             logger.info(f"Created {len(validation_df)} validation records")
             logger.info(f"Validation data sample:")
             logger.info(validation_df[['timestamp', 'predicted_price', 'actual_price', 'error']].head())
+            
+            # Debug: Check the time range of validation data
+            if len(validation_df) > 0:
+                time_range = validation_df['timestamp'].max() - validation_df['timestamp'].min()
+                logger.info(f"Validation data time range: {time_range.days} days")
+                logger.info(f"First prediction: {validation_df['timestamp'].min()}")
+                logger.info(f"Last prediction: {validation_df['timestamp'].max()}")
+                
+                # Check if we have enough data for 10 weeks
+                if time_range.days < 70:  # 10 weeks = 70 days
+                    logger.warning(f"Validation data only covers {time_range.days} days, expected 70+ days for 10 weeks")
             
             return validation_df
             
@@ -331,6 +327,8 @@ class BacktestValidator:
             
             # Get historical data for context (previous 30 trading days)
             historical_data = self.actual_data_for_validation.copy()
+            historical_context = pd.DataFrame()  # Initialize as empty DataFrame
+            
             if not historical_data.empty:
                 # Get the last 30 trading days before the first prediction
                 first_prediction_time = validation_data['timestamp'].min()
@@ -354,41 +352,53 @@ class BacktestValidator:
                     historical_context = daily_data
                     logger.warning(f"Only {len(historical_context)} business days available for historical context")
                 
-                if len(historical_context) > 0:
-                    # Plot historical context (previous 30 trading days)
-                    plt.plot(historical_context.index, historical_context['close'], 
-                            'g-', label='Historical Context (Previous 30 Days)', linewidth=2, alpha=0.7, marker='o', markersize=6)
-                    
-                    # Add vertical line to separate historical from prediction period
-                    plt.axvline(x=first_prediction_time, color='black', linestyle='--', alpha=0.5, linewidth=2)
-                    plt.text(first_prediction_time, plt.ylim()[1] * 0.95, 'Prediction Start', 
-                            rotation=90, verticalalignment='top', fontsize=10, alpha=0.7)
-                    
-                    logger.info(f"Historical context: {len(historical_context)} days from {historical_context.index[0]} to {historical_context.index[-1]}")
+                logger.info(f"Historical data available: {len(historical_data)} records")
+                logger.info(f"Historical before prediction: {len(historical_before)} records")
+                logger.info(f"Daily data: {len(daily_data)} records")
+                logger.info(f"Historical context: {len(historical_context)} records")
+            
+            if len(historical_context) > 0:
+                # Convert historical data to numeric indices for consistent plotting
+                historical_indices = list(range(-len(historical_context), 0))
+                historical_prices = historical_context['close'].values
+                
+                # Plot historical context (previous 30 trading days)
+                plt.plot(historical_indices, historical_prices, 
+                        'g-', label='Historical Context (Previous 30 Days)', linewidth=2, alpha=0.7, marker='o', markersize=6)
+                
+                logger.info(f"Historical context plotted: {len(historical_context)} days from {historical_context.index[0]} to {historical_context.index[-1]}")
+            else:
+                logger.warning("No historical context data available for plotting")
             
             # Plot prediction period data
             sample_data = validation_data.copy()
             
             if len(sample_data) > 0:
+                # Sort data by timestamp and convert to numeric indices
+                sample_data = sample_data.sort_values('timestamp').reset_index(drop=True)
+                prediction_indices = list(range(len(sample_data)))
+                
                 # Plot actual prices for prediction period
-                plt.plot(sample_data['timestamp'], sample_data['actual_price'], 
+                plt.plot(prediction_indices, sample_data['actual_price'], 
                         'b-', label='Actual Price (Prediction Period)', linewidth=3, alpha=0.9, marker='o', markersize=8)
                 
                 # Plot predicted prices for prediction period
-                plt.plot(sample_data['timestamp'], sample_data['predicted_price'], 
+                plt.plot(prediction_indices, sample_data['predicted_price'], 
                         'r--', label='Predicted Price (Prediction Period)', linewidth=3, alpha=0.9, marker='s', markersize=8)
                 
                 # Add arrows showing the prediction flow (how each prediction feeds into the next)
                 for i in range(len(sample_data) - 1):
                     # Draw arrow from prediction to next prediction to show data flow
-                    plt.annotate('', xy=(sample_data['timestamp'].iloc[i+1], sample_data['predicted_price'].iloc[i+1]), 
-                               xytext=(sample_data['timestamp'].iloc[i], sample_data['predicted_price'].iloc[i]),
+                    plt.annotate('', xy=(i+1, sample_data['predicted_price'].iloc[i+1]), 
+                               xytext=(i, sample_data['predicted_price'].iloc[i]),
                                arrowprops=dict(arrowstyle='->', color='red', alpha=0.5, lw=2))
                 
-                # Add text annotation explaining the data flow
-                plt.text(0.02, 0.98, 'Red arrows show how each prediction feeds into the next prediction\n(simulating production data flow)', 
-                        transform=plt.gca().transAxes, fontsize=10, verticalalignment='top',
-                        bbox=dict(boxstyle='round,pad=0.3', facecolor='yellow', alpha=0.7))
+                # Add vertical line to separate historical from prediction period
+                plt.axvline(x=0, color='black', linestyle='--', alpha=0.5, linewidth=2)
+                plt.text(0, plt.ylim()[1] * 0.95, 'Prediction Start', 
+                        rotation=90, verticalalignment='top', fontsize=10, alpha=0.7)
+                
+                logger.info(f"Prediction period: {len(sample_data)} days")
             else:
                 logger.warning("No data available for time series plot")
             
@@ -399,13 +409,59 @@ class BacktestValidator:
             plt.grid(True, alpha=0.3)
             plt.xticks(rotation=45)
             
-            # Format x-axis dates and limit ticks
+            # Format x-axis to show weeks
             ax = plt.gca()
-            ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d %H:%M'))
             
-            # Limit the number of ticks to avoid the warning
-            ax.locator_params(axis='x', nbins=10)  # Limit to 10 ticks max
-            ax.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+            if len(sample_data) > 0:
+                # Calculate number of weeks for the prediction period
+                total_prediction_days = len(sample_data)
+                num_weeks = max(1, (total_prediction_days + 6) // 7)  # Round up to get number of weeks
+                
+                # Ensure we show at least 10 weeks if we have enough data
+                target_weeks = min(10, num_weeks)  # Show up to 10 weeks
+                target_days = target_weeks * 7
+                
+                # Create tick positions and labels
+                tick_positions = []
+                tick_labels = []
+                
+                # Add tick for prediction start (index 0)
+                tick_positions.append(0)
+                tick_labels.append('Prediction Start')
+                
+                # Add weekly ticks for prediction period (up to 10 weeks)
+                # Start from day 7 (end of first week) to get "1. week" label
+                for i in range(7, min(target_days, total_prediction_days), 7):
+                    tick_positions.append(i)
+                    week_num = (i // 7)  # This gives us 1, 2, 3, etc. for weeks
+                    tick_labels.append(f'{week_num}. week')
+                
+                # Add final tick only if we have more data than what's already covered
+                if total_prediction_days > 1:
+                    final_tick = min(target_days - 1, total_prediction_days - 1)
+                    # Only add final tick if it's not already included and represents a new week
+                    if final_tick not in tick_positions and final_tick > 0:
+                        final_week = (final_tick // 7)  # This gives us 1, 2, 3, etc. for weeks
+                        # Only add if it's a different week than the last one
+                        if not tick_labels or f'{final_week}. week' != tick_labels[-1]:
+                            tick_positions.append(final_tick)
+                            tick_labels.append(f'{final_week}. week')
+                
+                # Set the ticks and labels
+                ax.set_xticks(tick_positions)
+                ax.set_xticklabels(tick_labels)
+                
+                # Set x-axis limits to show both historical and prediction data
+                historical_days = len(historical_context) if len(historical_context) > 0 else 0
+                ax.set_xlim(-historical_days - 1, min(target_days, total_prediction_days) + 1)
+                
+                logger.info(f"X-axis: {len(tick_positions)} ticks, {target_weeks} weeks target, {total_prediction_days} prediction days available")
+                logger.info(f"Historical days: {historical_days}, X-axis range: {-historical_days - 1} to {min(target_days, total_prediction_days) + 1}")
+            else:
+                # Fallback formatting
+                ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d %H:%M'))
+                ax.locator_params(axis='x', nbins=10)
+                ax.xaxis.set_major_locator(mdates.DayLocator(interval=1))
             
             timeseries_file = os.path.join(self.plots_dir, f'{symbol}_timeseries_comparison.png')
             plt.savefig(timeseries_file, dpi=300, bbox_inches='tight')

@@ -147,9 +147,9 @@ class Backtester:
         """Set up callbacks for the prediction simulator"""
         def on_prediction(prediction_result):
             """Callback for when a prediction is made"""
-            if prediction_result['prediction_horizon'] == '1 week (daily)':
-                # Weekly prediction format
-                logger.info(f"Weekly prediction made for {prediction_result['symbol']} at "
+            if prediction_result['prediction_horizon'] == '2 weeks (daily)':
+                # 2-week prediction format
+                logger.info(f"2-week prediction made for {prediction_result['symbol']} at "
                            f"{prediction_result['prediction_timestamp']} "
                            f"(confidence: {prediction_result['confidence_score']:.3f})")
                 logger.info(f"  → Predicted week-end price: ${prediction_result['predicted_week_end_price']:.2f} "

@@ -110,7 +110,7 @@ class ModelManager:
                 "symbol": stock_symbol,
                 "model_type": "LSTM",
                 "sequence_length": sequence_length,
-                "prediction_length": 672,  # 1 week = 7 days * 24 hours * 4 (15-min intervals)
+                "prediction_length": 1344,  # 2 weeks = 14 days * 24 hours * 4 (15-min intervals)
                 "features": features,
                 "model_architecture": {
                     "input_shape": input_shape,
