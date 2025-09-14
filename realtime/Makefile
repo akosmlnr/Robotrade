@@ -61,7 +61,7 @@ run-status: ## Show system status
 run-api: ## Start the API server
 	@echo "$(GREEN)Starting API server...$(NC)"
 	docker run --rm -p 5000:5000 -v "$(PWD)/data":/app/data -v "$(PWD)/logs":/app/logs --env-file .env \
-		$(DOCKER_IMAGE) $(PYTHON_CMD) -m core.api_server
+		$(DOCKER_IMAGE) $(PYTHON_CMD) start_api_server.py
 
 ##@ Development
 

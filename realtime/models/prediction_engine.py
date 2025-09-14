@@ -73,13 +73,13 @@ class PredictionEngine:
                 logger.error(f"Failed to create prediction sequence for {symbol}")
                 return None
             
-            # Generate 2-week prediction (14 days * 24 hours * 4 = 1344 15-minute intervals)
-            biweekly_intervals = 14 * 24 * 4
+            # Generate 2-week prediction (14 days of daily predictions)
+            prediction_days = 14
             predictions = []
             timestamps = []
             
-            # Start from the next 15-minute interval
-            current_time = latest_data.index[-1] + timedelta(minutes=15)
+            # Start from tomorrow (next trading day)
+            current_time = latest_data.index[-1].replace(hour=16, minute=0, second=0, microsecond=0) + timedelta(days=1)
             
             # Use the last known price as starting point
             current_price = latest_data['close'].iloc[-1]
@@ -90,22 +90,22 @@ class PredictionEngine:
                 logger.error(f"Invalid current price for {symbol}: {current_price}")
                 return None
             
-            # Generate predictions step by step
-            for i in range(biweekly_intervals):
+            # Generate predictions step by step (daily predictions)
+            for i in range(prediction_days):
                 try:
-                    # Make prediction for next time step
+                    # Make prediction for next day
                     prediction_scaled = model.predict(prediction_sequence, verbose=0)
                     prediction_price = scaler.inverse_transform(prediction_scaled)[0][0]
                     
                     # Debug logging for first few predictions
                     if i < 5:
-                        logger.info(f"Step {i}: Scaled prediction: {prediction_scaled[0][0]:.6f}, "
+                        logger.info(f"Day {i+1}: Scaled prediction: {prediction_scaled[0][0]:.6f}, "
                                    f"Inverse transform: {prediction_price:.2f}, "
                                    f"Previous price: {current_price:.2f}")
                     
                     # Validate prediction
                     if not self.validate_prediction_output(prediction_price):
-                        logger.warning(f"Invalid prediction for {symbol} at step {i}")
+                        logger.warning(f"Invalid prediction for {symbol} at day {i+1}")
                         # Use previous prediction or current price
                         prediction_price = predictions[-1] if predictions else current_price
                     
@@ -117,8 +117,8 @@ class PredictionEngine:
                         prediction_sequence, prediction_price, scaler, features
                     )
                     
-                    # Move to next time step
-                    current_time += timedelta(minutes=15)
+                    # Move to next day
+                    current_time += timedelta(days=1)
                     
                 except Exception as e:
                     logger.error(f"Error in prediction step {i} for {symbol}: {e}")
@@ -126,7 +126,7 @@ class PredictionEngine:
                     fallback_price = predictions[-1] if predictions else current_price
                     predictions.append(fallback_price)
                     timestamps.append(current_time)
-                    current_time += timedelta(minutes=15)
+                    current_time += timedelta(days=1)
             
             # Create prediction DataFrame
             prediction_df = pd.DataFrame({
@@ -140,8 +140,8 @@ class PredictionEngine:
                 symbol, predictions, latest_data
             )
             
-            # Store predictions in database
-            self.store_predictions(symbol, prediction_df, confidence_score)
+            # Store predictions in database with time-based confidence decay
+            self.store_predictions_with_decay(symbol, prediction_df, confidence_score)
             
             result = {
                 'symbol': symbol,
@@ -151,7 +151,7 @@ class PredictionEngine:
                 'sequence_length': sequence_length,
                 'total_predictions': len(predictions),
                 'prediction_horizon': '2 weeks',
-                'data_points': biweekly_intervals
+                'data_points': prediction_days
             }
             
             # Log prediction statistics
@@ -340,10 +340,48 @@ class PredictionEngine:
             logger.error(f"Error calculating confidence for {symbol}: {e}")
             return 0.5  # Default confidence
     
+    def store_predictions_with_decay(self, symbol: str, predictions_df: pd.DataFrame, 
+                                   base_confidence: float) -> bool:
+        """
+        Store predictions in database with time-based confidence decay
+        
+        Args:
+            symbol: Stock symbol
+            predictions_df: DataFrame with predictions
+            base_confidence: Base confidence score for first prediction
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            prediction_timestamp = datetime.now()
+            
+            for i, (timestamp, row) in enumerate(predictions_df.iterrows()):
+                # Calculate confidence decay: closer predictions have higher confidence
+                # Decay factor: 0.95 for day 1, 0.80 for day 7, 0.65 for day 14
+                days_ahead = i + 1
+                decay_factor = max(0.3, 1.0 - (days_ahead - 1) * 0.025)  # 2.5% decay per day
+                individual_confidence = base_confidence * decay_factor
+                
+                self.data_storage.store_prediction(
+                    symbol=symbol,
+                    prediction_timestamp=prediction_timestamp,
+                    prediction_date=timestamp,
+                    predicted_price=row['predicted_price'],
+                    confidence_score=individual_confidence
+                )
+            
+            logger.info(f"Stored {len(predictions_df)} predictions for {symbol} with confidence decay")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error storing predictions for {symbol}: {e}")
+            return False
+    
     def store_predictions(self, symbol: str, predictions_df: pd.DataFrame, 
                          confidence_score: float) -> bool:
         """
-        Store predictions in database
+        Store predictions in database (legacy method)
         
         Args:
             symbol: Stock symbol

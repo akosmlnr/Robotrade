@@ -710,7 +710,7 @@ class DataStorage:
             alert_id = cursor.lastrowid
             self.connection.commit()
             
-            logger.info(f"Stored system alert {alert_id}: {message}")
+            logger.debug(f"Stored system alert {alert_id}: {message}")
             return alert_id
             
         except Exception as e:

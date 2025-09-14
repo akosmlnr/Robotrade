@@ -499,7 +499,7 @@ class PerformanceMonitor:
             # Update statistics
             self.performance_stats['active_alerts'] = len(self.active_alerts)
             
-            logger.warning(f"Performance alert created: {alert.message}")
+            logger.debug(f"Performance alert created: {alert.message}")
             
         except Exception as e:
             logger.error(f"Error creating performance alert: {e}")

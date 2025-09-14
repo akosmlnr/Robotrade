@@ -286,19 +286,95 @@ class APIServer:
             if not self._rate_limit_check(request.remote_addr, tier):
                 return jsonify({'error': 'Rate limit exceeded'}), 429
             
-            predictions = self.realtime_system.get_current_predictions()
-            
-            # Format predictions for API response
+            # Get predictions from database instead of cache
             formatted_predictions = {}
-            for symbol, pred_data in predictions.items():
-                formatted_predictions[symbol] = {
-                    'symbol': symbol,
-                    'timestamp': pred_data['timestamp'].isoformat(),
-                    'confidence_score': pred_data['confidence_score'],
-                    'total_predictions': pred_data['total_predictions'],
-                    'prediction_horizon': pred_data['prediction_horizon'],
-                    'latest_predictions': pred_data['predictions'].tail(10).to_dict('records') if not pred_data['predictions'].empty else []
-                }
+            for symbol in self.realtime_system.symbols:
+                # Get latest predictions from database using direct SQL query
+                cursor = self.data_storage.connection.cursor()
+                cursor.execute("""
+                    SELECT prediction_timestamp, prediction_date, predicted_price, confidence_score
+                    FROM predictions 
+                    WHERE symbol = ? 
+                    ORDER BY prediction_timestamp DESC 
+                    LIMIT 100
+                """, (symbol,))
+                
+                predictions_data = cursor.fetchall()
+                if predictions_data:
+                    # Convert to DataFrame for easier processing
+                    import pandas as pd
+                    predictions_df = pd.DataFrame(predictions_data, columns=[
+                        'prediction_timestamp', 'prediction_date', 'predicted_price', 'confidence_score'
+                    ])
+                    
+                    # Get latest prediction timestamp
+                    latest_timestamp = predictions_df['prediction_timestamp'].max()
+                    latest_predictions = predictions_df[predictions_df['prediction_timestamp'] == latest_timestamp]
+                    
+                    # Convert timestamp to string if it's not already
+                    timestamp_str = latest_timestamp if isinstance(latest_timestamp, str) else latest_timestamp.isoformat()
+                    
+                    # Convert predictions to JSON-serializable format
+                    # Show all daily predictions (up to 14 days)
+                    latest_predictions_data = latest_predictions[['prediction_date', 'predicted_price', 'confidence_score']].sort_values('prediction_date')
+                    predictions_list = []
+                    for _, row in latest_predictions_data.iterrows():
+                        # Ensure all values are JSON-serializable
+                        pred_date = row['prediction_date']
+                        pred_price = row['predicted_price']
+                        conf_score = row['confidence_score']
+                        
+                        # Convert to proper types with error handling
+                        try:
+                            if isinstance(pred_date, bytes):
+                                pred_date = pred_date.decode('utf-8')
+                            else:
+                                pred_date = str(pred_date)
+                                
+                            if isinstance(pred_price, bytes):
+                                # Try to decode as binary float data
+                                try:
+                                    import struct
+                                    pred_price = struct.unpack('f', pred_price)[0]
+                                except (struct.error, ValueError):
+                                    continue  # Skip this row if can't decode
+                            else:
+                                pred_price_str = str(pred_price)
+                                # Try to convert to float, skip if invalid
+                                try:
+                                    pred_price = float(pred_price_str)
+                                except (ValueError, TypeError):
+                                    continue  # Skip this row if price is invalid
+                                
+                            if isinstance(conf_score, bytes):
+                                conf_score_str = conf_score.decode('utf-8')
+                            else:
+                                conf_score_str = str(conf_score)
+                            
+                            # Try to convert to float, skip if invalid
+                            try:
+                                conf_score = float(conf_score_str)
+                            except (ValueError, TypeError):
+                                continue  # Skip this row if confidence is invalid
+                                
+                        except Exception as e:
+                            # Skip this row if any conversion fails
+                            continue
+                        
+                        predictions_list.append({
+                            'prediction_date': pred_date,
+                            'predicted_price': pred_price,
+                            'confidence_score': conf_score
+                        })
+                    
+                    formatted_predictions[symbol] = {
+                        'symbol': symbol,
+                        'timestamp': timestamp_str,
+                        'confidence_score': float(latest_predictions['confidence_score'].iloc[0]) if not latest_predictions.empty else 0.0,
+                        'total_predictions': len(latest_predictions),
+                        'prediction_horizon': '2 weeks',  # Actual horizon from prediction engine
+                        'latest_predictions': predictions_list
+                    }
             
             return jsonify({
                 'predictions': formatted_predictions,
@@ -319,19 +395,94 @@ class APIServer:
             if not self._rate_limit_check(request.remote_addr, tier):
                 return jsonify({'error': 'Rate limit exceeded'}), 429
             
-            predictions = self.realtime_system.get_current_predictions(symbol)
+            # Get predictions from database using direct SQL query
+            cursor = self.data_storage.connection.cursor()
+            cursor.execute("""
+                SELECT prediction_timestamp, prediction_date, predicted_price, confidence_score
+                FROM predictions 
+                WHERE symbol = ? 
+                ORDER BY prediction_timestamp DESC 
+                LIMIT 100
+            """, (symbol,))
             
-            if not predictions:
+            predictions_data = cursor.fetchall()
+            if not predictions_data:
                 return jsonify({'error': f'No predictions available for {symbol}'}), 404
+            
+            # Convert to DataFrame for easier processing
+            import pandas as pd
+            predictions_df = pd.DataFrame(predictions_data, columns=[
+                'prediction_timestamp', 'prediction_date', 'predicted_price', 'confidence_score'
+            ])
+            
+            # Get latest prediction timestamp
+            latest_timestamp = predictions_df['prediction_timestamp'].max()
+            latest_predictions = predictions_df[predictions_df['prediction_timestamp'] == latest_timestamp]
+            
+            # Convert timestamp to string if it's not already
+            timestamp_str = latest_timestamp if isinstance(latest_timestamp, str) else latest_timestamp.isoformat()
+            
+            # Convert predictions to JSON-serializable format
+            # Show all daily predictions (up to 14 days)
+            latest_predictions_sorted = latest_predictions.sort_values('prediction_date')
+            predictions_list = []
+            for _, row in latest_predictions_sorted.iterrows():
+                # Ensure all values are JSON-serializable
+                pred_date = row['prediction_date']
+                pred_price = row['predicted_price']
+                conf_score = row['confidence_score']
+                
+                # Convert to proper types with error handling
+                try:
+                    if isinstance(pred_date, bytes):
+                        pred_date = pred_date.decode('utf-8')
+                    else:
+                        pred_date = str(pred_date)
+                        
+                    if isinstance(pred_price, bytes):
+                        # Try to decode as binary float data
+                        try:
+                            import struct
+                            pred_price = struct.unpack('f', pred_price)[0]
+                        except (struct.error, ValueError):
+                            continue  # Skip this row if can't decode
+                    else:
+                        pred_price_str = str(pred_price)
+                        # Try to convert to float, skip if invalid
+                        try:
+                            pred_price = float(pred_price_str)
+                        except (ValueError, TypeError):
+                            continue  # Skip this row if price is invalid
+                        
+                    if isinstance(conf_score, bytes):
+                        conf_score_str = conf_score.decode('utf-8')
+                    else:
+                        conf_score_str = str(conf_score)
+                    
+                    # Try to convert to float, skip if invalid
+                    try:
+                        conf_score = float(conf_score_str)
+                    except (ValueError, TypeError):
+                        continue  # Skip this row if confidence is invalid
+                        
+                except Exception as e:
+                    # Skip this row if any conversion fails
+                    continue
+                
+                predictions_list.append({
+                    'prediction_date': pred_date,
+                    'predicted_price': pred_price,
+                    'confidence_score': conf_score
+                })
             
             # Format prediction data
             formatted_prediction = {
                 'symbol': symbol,
-                'timestamp': predictions['timestamp'].isoformat(),
-                'confidence_score': predictions['confidence_score'],
-                'total_predictions': predictions['total_predictions'],
-                'prediction_horizon': predictions['prediction_horizon'],
-                'predictions': predictions['predictions'].to_dict('records') if not predictions['predictions'].empty else []
+                'timestamp': timestamp_str,
+                'confidence_score': float(latest_predictions['confidence_score'].iloc[0]) if not latest_predictions.empty else 0.0,
+                'total_predictions': len(latest_predictions),
+                'prediction_horizon': '2 weeks',  # Actual horizon from prediction engine
+                'predictions': predictions_list
             }
             
             return jsonify(formatted_prediction)
@@ -396,22 +547,25 @@ class APIServer:
                 return jsonify({'error': 'Rate limit exceeded'}), 429
             
             # Get performance summary
-            summary = self.performance_monitor.get_metrics_summary()
+            summary = self.performance_monitor.get_performance_summary()
             
-            # Get active alerts
-            active_alerts = self.performance_monitor.get_active_alerts()
-            formatted_alerts = []
-            for alert_key, alert in active_alerts.items():
-                formatted_alerts.append({
-                    'key': alert_key,
-                    'level': alert.level.value,
-                    'metric_type': alert.metric_type.value,
-                    'symbol': alert.symbol,
-                    'message': alert.message,
-                    'value': alert.value,
-                    'threshold': alert.threshold,
-                    'timestamp': alert.timestamp.isoformat()
-                })
+            # Get active alerts from alerting system
+            try:
+                alert_stats = self.alerting_system.get_alerting_statistics()
+                formatted_alerts = []
+                # Note: This is a simplified version - you might want to implement get_active_alerts in AlertingSystem
+                if 'active_alerts' in alert_stats:
+                    for alert_key, alert in alert_stats['active_alerts'].items():
+                        formatted_alerts.append({
+                            'id': alert_key,
+                            'type': alert.get('type', 'unknown'),
+                            'message': alert.get('message', ''),
+                            'timestamp': alert.get('timestamp', ''),
+                            'severity': alert.get('severity', 'info')
+                        })
+            except Exception as e:
+                logger.warning(f"Could not get alerts: {e}")
+                formatted_alerts = []
             
             return jsonify({
                 'performance_summary': summary,
