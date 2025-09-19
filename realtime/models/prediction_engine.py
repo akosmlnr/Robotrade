@@ -98,44 +98,26 @@ class PredictionEngine:
                 return None
             
             # Generate predictions step by step (daily predictions)
-            # Use diverse historical data for each prediction to create realistic volatility
+            # Use consistent historical data for all predictions to maintain stability
             base_historical_data = data_with_features.copy()
             
             for i in range(prediction_days):
                 try:
-                    # For each prediction, use dramatically different historical data slices
-                    # This creates realistic volatility by exposing the model to different market conditions
-                    if i == 0:
-                        # First prediction: use the most recent data
-                        prediction_data = base_historical_data.tail(sequence_length * 2)
-                    elif i < 3:
-                        # Early predictions: use moderately older data
-                        start_idx = max(0, len(base_historical_data) - sequence_length * 5 - i * 20)
-                        end_idx = len(base_historical_data) - i * 10
-                        prediction_data = base_historical_data.iloc[start_idx:end_idx]
-                    elif i < 7:
-                        # Middle predictions: use much older data for significant variation
-                        start_idx = max(0, len(base_historical_data) - sequence_length * 10 - i * 50)
-                        end_idx = len(base_historical_data) - i * 25
-                        prediction_data = base_historical_data.iloc[start_idx:end_idx]
-                    else:
-                        # Later predictions: use very diverse historical periods for maximum variation
-                        # This creates the dramatic volatility seen in backtester results
-                        start_idx = max(0, len(base_historical_data) - sequence_length * 20 - i * 100)
-                        end_idx = len(base_historical_data) - i * 50
-                        prediction_data = base_historical_data.iloc[start_idx:end_idx]
+                    # Use consistent historical data for all predictions to maintain stability
+                    # This matches the backtester approach for more stable predictions
+                    prediction_data = base_historical_data.tail(sequence_length * 2)
                     
                     # Ensure we have enough data
                     if len(prediction_data) < sequence_length:
                         prediction_data = base_historical_data.tail(sequence_length * 2)
                     
-                    # Debug logging for historical data diversity
+                    # Debug logging for consistent data usage
                     if i < 5:  # Log first few predictions for debugging
                         data_start_price = prediction_data['close'].iloc[0] if len(prediction_data) > 0 else 0
                         data_end_price = prediction_data['close'].iloc[-1] if len(prediction_data) > 0 else 0
-                        logger.debug(f"Day {i+1}: Using {len(prediction_data)} data points, price range: ${data_start_price:.2f} to ${data_end_price:.2f}")
+                        logger.debug(f"Day {i+1}: Using {len(prediction_data)} consistent data points, price range: ${data_start_price:.2f} to ${data_end_price:.2f}")
                     
-                    # Create prediction sequence from diverse historical data
+                    # Create prediction sequence from consistent historical data
                     prediction_sequence = self.create_prediction_sequence(
                         prediction_data, sequence_length, features, scaler
                     )
@@ -169,34 +151,20 @@ class PredictionEngine:
                     if i == 0:
                         current_price = base_historical_data['close'].iloc[-1]
                         price_change = prediction_price - current_price
-                        # Use much higher factor to allow dramatic volatility like backtester
-                        realistic_change = price_change * 1.2  # Use 120% of the predicted change for dramatic volatility
+                        # Use smaller factor for more stable predictions like backtester
+                        realistic_change = price_change * 0.3  # Use 30% of the predicted change for stable predictions
                         prediction_price = current_price + realistic_change
                         
                         logger.debug(f"First prediction: current=${current_price:.2f}, raw_pred=${scaler.inverse_transform(prediction_scaled)[0][0]:.2f}, "
                                    f"change=${price_change:.2f}, realistic_change=${realistic_change:.2f}, final=${prediction_price:.2f}")
                     
-                    # Add significant natural volatility to subsequent predictions for realism
-                    if i > 0:
-                        # Add substantial random variation based on historical volatility
-                        recent_volatility = base_historical_data['close'].tail(50).std()
-                        # Use much higher volatility factor for dramatic price movements
-                        variation = np.random.normal(0, recent_volatility * 0.3)  # 30% of historical volatility
-                        prediction_price += variation
-                        
-                        # Add trend-based variation to create more realistic patterns
-                        if i > 2:
-                            trend_factor = np.random.choice([-1, 1]) * (recent_volatility * 0.2)
-                            prediction_price += trend_factor
-                        
-                        # Ensure price stays reasonable but allow for dramatic movements
-                        if prediction_price <= 0:
-                            prediction_price = base_historical_data['close'].iloc[-1]
+                    # No artificial volatility - let the model's natural predictions drive results
+                    # This matches the backtester approach for more stable predictions
                     
                     predictions.append(prediction_price)
                     timestamps.append(current_time)
                     
-                    # Move to next trading day (no rolling updates - using diverse historical data)
+                    # Move to next trading day (no rolling updates - using consistent historical data)
                     current_time = self._get_next_trading_day(current_time + timedelta(days=1))
                     
                 except Exception as e:

@@ -183,7 +183,7 @@ class PolygonDataFetcher:
                     logger.warning(f"No fallback data found for {symbol}")
                     return pd.DataFrame()
             
-            # Convert to DataFrame
+            # Convert to DataFrame - using ALL available fields for better predictions
             bars = []
             for bar in data['results']:
                 bars.append({
@@ -192,7 +192,9 @@ class PolygonDataFetcher:
                     'high': bar['h'],
                     'low': bar['l'],
                     'close': bar['c'],
-                    'volume': bar['v']
+                    'volume': bar['v'],
+                    'transactions': bar.get('n', 0),  # Number of transactions
+                    'vwap': bar.get('vw', 0.0)       # Volume-weighted average price
                 })
             
             df = pd.DataFrame(bars)

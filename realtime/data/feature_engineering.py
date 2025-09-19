@@ -17,20 +17,25 @@ class FeatureEngineer:
     
     def __init__(self):
         """Initialize the feature engineer"""
-        # Use only close price to match the current trained model
-        # TODO: Retrain model with 6 features for better predictions
-        self.features = ['close']
-        logger.info("FeatureEngineer initialized with close price feature (matching current trained model)")
+        # Use all available fields for comprehensive predictions
+        # OHLCV + transactions + VWAP + technical indicators
+        self.features = [
+            'open', 'high', 'low', 'close', 'volume', 
+            'transactions', 'vwap',
+            'rsi', 'macd', 'bb_upper', 'bb_middle', 'bb_lower',
+            'price_change', 'volume_change', 'price_volume_ratio'
+        ]
+        logger.info("FeatureEngineer initialized with comprehensive features for enhanced predictions")
     
     def add_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        Add features to the dataframe - using close price only for current model
+        Add comprehensive features to the dataframe using all available data
         
         Args:
-            df: DataFrame with OHLCV data
+            df: DataFrame with OHLCV + transactions + VWAP data
             
         Returns:
-            DataFrame with close price feature only (matching current trained model)
+            DataFrame with comprehensive features for enhanced predictions
         """
         try:
             if df.empty:
@@ -39,24 +44,53 @@ class FeatureEngineer:
             # Create a copy to avoid modifying original
             data = df.copy()
             
-            # Ensure we have the close price
-            if 'close' not in data.columns:
-                logger.error("Close price column not found in data")
+            # Ensure we have the required base columns
+            required_columns = ['open', 'high', 'low', 'close', 'volume']
+            missing_columns = [col for col in required_columns if col not in data.columns]
+            if missing_columns:
+                logger.error(f"Missing required columns: {missing_columns}")
                 return df
             
-            # Select only the close price column
-            result = data[['close']].copy()
+            # Initialize result with base OHLCV data
+            result = data[required_columns].copy()
             
-            # Fill any NaN values
+            # Add transactions and VWAP if available
+            if 'transactions' in data.columns:
+                result['transactions'] = pd.to_numeric(data['transactions'], errors='coerce')
+            else:
+                result['transactions'] = 0
+                
+            if 'vwap' in data.columns:
+                result['vwap'] = pd.to_numeric(data['vwap'], errors='coerce')
+            else:
+                result['vwap'] = result['close']  # Use close price as fallback
+            
+            # Calculate technical indicators
+            result['rsi'] = self._calculate_rsi(result['close'])
+            result['macd'] = self._calculate_macd(result['close'])
+            
+            # Bollinger Bands
+            bb_upper, bb_middle, bb_lower = self._calculate_bollinger_bands(result['close'])
+            result['bb_upper'] = bb_upper
+            result['bb_middle'] = bb_middle
+            result['bb_lower'] = bb_lower
+            
+            # Price and volume change features
+            result['price_change'] = result['close'].pct_change()
+            result['volume_change'] = result['volume'].pct_change()
+            result['price_volume_ratio'] = result['close'] / (result['volume'] + 1)  # +1 to avoid division by zero
+            
+            # Fill any NaN values using forward fill then backward fill
             result = result.fillna(method='ffill').fillna(method='bfill')
             
-            # Ensure values are numeric
-            result['close'] = pd.to_numeric(result['close'], errors='coerce')
+            # Ensure all values are numeric
+            for col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce')
             
             # Fill any remaining NaN values with 0
             result = result.fillna(0)
             
-            logger.info(f"Using close price feature only (matching current trained model)")
+            logger.info(f"Created comprehensive feature set with {len(result.columns)} features")
             return result
             
         except Exception as e:
